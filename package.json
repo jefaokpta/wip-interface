@@ -1,0 +1,22 @@
+{
+  "name": "wip-interface",
+  "version": "1.0.0",
+  "description": "Interface WIP API com WHATSAPP",
+  "main": "src/main.ts",
+  "scripts": {
+    "dev": "ts-node-dev --transpile-only src/main.ts",
+    "start": "node dist/main.js"
+  },
+  "author": "jefaokpta",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "axios": "^1.4.0",
+    "express": "^4.18.2",
+    "qrcode-terminal": "^0.12.0"
+  }
+}
