@@ -100,12 +100,13 @@ export const connectWhatsApp = async (waVersion: WAVersion) => {
 
     /** ATUALIZACAO DE STATUS DE MSG ENVIADA */
     sock.ev.on('messages.update', m => {
-        return axios.post(`${urlBase}/api/messages/status/update`, {
+        console.log('ATUALIZANDO STATUS DE MENSAGEM', m[0].update.status)
+        axios.post(`${urlBase}/api/messages/status/update`, {
             remoteJid: m[0].key.remoteJid,
             id: m[0].key.id,
             status: m[0].update.status,
             companyId: process.env.COMPANY || '18'
-        })
+        }).catch(err => console.log('ERRO 🧨 AO ATUALIZAR STATUS DE MENSAGEM', err.message))
     })
 
     /** ATUALIZA ARQUIVO AUTHS */
