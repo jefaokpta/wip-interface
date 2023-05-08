@@ -43,10 +43,10 @@ export function messageAnalisator(whatsappMessage: IWebMessageInfo) {
         //     })
     } else if (whatsappMessage.message?.conversation) {
         messageData.text = whatsappMessage.message?.conversation
-        console.log(';;;;;;;;;;;;; MESSAGE DATA', messageData) // todo: remove this line
         axios.post(`${urlBase}/wip/whatsapp/text-messages`, messageData)
+            .catch(err => console.log('ERRO 🧨 AO ENVIAR MENSAGEM DE TEXTO', err.message))
     } else {
-        console.log('ERRO: TIPO DE MENSAGEM DESCONHECIDA') // todo: remove this line
+        console.log('ERRO: 🤨 TIPO DE MENSAGEM DESCONHECIDA')
     }
 }
 

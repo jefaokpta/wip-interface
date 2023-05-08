@@ -3,22 +3,27 @@ import {mediaFolder} from "../util/staticVar";
 import {MessageData} from "../model/messageData";
 import {Whatsapp} from "../model/whatsapp";
 import {MediaMessage} from "../model/mediaMessage";
+import {proto} from "@adiwajshing/baileys";
+import WebMessageInfo = proto.WebMessageInfo;
 
 
 const exec =  util.promisify(require("child_process").exec);
 
 const FILE_URL = `${mediaFolder}/outbox`
 
-export function sendTxt(message: MessageData) {
-    Whatsapp.sock.sendMessage(message.whatsapp!.concat('@s.whatsapp.net'), {text: message.text!})
-        .then(webMessage => console.log('MENSAGEM ENVIADA COM SUCESSO', webMessage))
+export async function sendTxt(message: MessageData) {
+    const messageSended = await Whatsapp.sock.sendMessage(message.whatsapp!.concat('@s.whatsapp.net'), {text: message.text!})
+    message.messageId = messageSended.key.id
+    message.timestampInSeconds = messageSended.messageTimestamp.low
+    message.messageStatus = messageSended.status || 2
+    console.log('MENSAGEM DE TEXTO ENVIADA', message.messageId)
+    return message
 }
 
 export function sendChatbot(message: MessageData, invalidOption: boolean) {
     const chatbot = message.chatbot!!
-    const text = `${chatbot.initialMessage} \n${chatbot.options.map((option) => `${option.option} - ${option.department}`).join('\n')}`
-    // console.log(message)
-    // todo: testar envio direto para o whatsapp
+    const options = chatbot.options.map((option) => `${option.option} - ${option.department}`).join('\n')
+    const text = invalidOption ? `${chatbot.invalidOption}\n\n${options}` : `${chatbot.initialMessage}\n\n${options}`
     Whatsapp.sock.sendMessage(message.whatsapp!.concat('@s.whatsapp.net'), {text: text})
 }
 

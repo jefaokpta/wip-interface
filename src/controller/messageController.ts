@@ -15,9 +15,8 @@ export const buttonMessageController = express()
 export const blockContact = express()
 export const isOnWhatsapp = express()
 
-messageController.post('/', (req, res) => {
-    sendTxt(req.body)
-    res.sendStatus(200)
+messageController.post('/', async (req, res) => {
+    res.send(await sendTxt(req.body))
 })
 
 chatbotController.post('/', (req, res) => {

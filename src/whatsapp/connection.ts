@@ -29,7 +29,7 @@ export const connectWhatsApp = async (waVersion: WAVersion) => {
         if(qr != null) {
             sendQrCode(qr)
         }
-        console.log('ESTADO DA CONEXAO ', connection)
+        console.log('ESTADO DA CONEXAO - ', connection)
         switch (connection) {
             case 'open':
                 Whatsapp.sock = sock
@@ -100,12 +100,15 @@ export const connectWhatsApp = async (waVersion: WAVersion) => {
 
     /** ATUALIZACAO DE STATUS DE MSG ENVIADA */
     sock.ev.on('messages.update', m => {
-        console.log('ATUALIZANDO STATUS DE MENSAGEM', m[0].update.status)
-        axios.post(`${urlBase}/api/messages/status/update`, {
-            remoteJid: m[0].key.remoteJid,
-            id: m[0].key.id,
-            status: m[0].update.status,
-            companyId: process.env.COMPANY || '18'
+        console.log('ATUALIZANDO STATUS DE MENSAGEM', m[0])
+        axios.post(`${urlBase}/wip/whatsapp/message-status`, {
+            messageId: m[0].key.id,
+            controlNumber: Number(process.env.CONTROL_NUMBER) || 100023,
+            whatsapp: m[0].key.remoteJid!.includes(':') ? m[0].key.remoteJid!.split(':')[0] : m[0].key.remoteJid!.split('@')[0],
+            timestampInSeconds: 0,
+            messageStatus: m[0].update.status,
+            instanceId: process.env.API_PORT || "3007",
+            fromMe: m[0].key.fromMe
         }).catch(err => console.log('ERRO 🧨 AO ATUALIZAR STATUS DE MENSAGEM', err.message))
     })
 

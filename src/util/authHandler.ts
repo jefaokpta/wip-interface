@@ -2,17 +2,17 @@ import fs from "fs";
 import {mediaFolder, urlBase} from "./staticVar";
 import axios from "axios";
 
-const companyId = process.env.COMPANY || '18'
-let authFolderPath = `./auth_info_multi-${companyId}`
-let authFolderPathBkp = `${mediaFolder}/auths/auth_info_multi-${companyId}`
+const controlNumber = process.env.CONTROL_NUMBER || '100023'
+let authFolderPath = `./auth_info_multi-${controlNumber}`
+let authFolderPathBkp = `${mediaFolder}/auths/auth_info_multi-${controlNumber}`
 
 export function authFolderRestore() {
     if (!fs.existsSync(authFolderPath)) {
         try {
             fs.cpSync(authFolderPathBkp, authFolderPath, {recursive: true})
-            console.log('INFO: AUTH FOLDER RESTAURADO COM SUCESSO.')
+            console.log('INFO: 👍🏼 AUTH FOLDER RESTAURADO COM SUCESSO.')
         } catch (e) {
-            console.log('ERRO: AO RESTAURAR AUTH FOLDER ', e)
+            console.log('ERRO: 🧨 AO RESTAURAR AUTH FOLDER ', e)
         }
     }
     return authFolderPath
@@ -25,18 +25,18 @@ export function authFolderDuplicate() {
 }
 
 export function deleteAuthFolder() {
-    fs.rmdir(authFolderPath, (err) => {
+    fs.rm(authFolderPath, {recursive: true}, (err) => {
         if (err) console.log('ERRO: AO DELETAR AUTH FOLDER', err)
         else console.log('INFO: AUTH FOLDER DELETADO.');
     })
-    fs.rmdir(authFolderPathBkp, (err) => {
+    fs.rm(authFolderPathBkp, {recursive: true}, (err) => {
         if (err) console.log('ERRO: AO DELETAR AUTH FOLDER', err)
         else console.log('INFO: AUTH FOLDER DELETADO.');
     })
 }
 
 export function confirmAuthToApi(){
-    axios.post(`${urlBase}/api/register/auth/${companyId}`)
+    axios.post(`${urlBase}/api/register/auth/${controlNumber}`)
         .then(() => {
             console.log('AUTH CONFIRMADA')
         })
