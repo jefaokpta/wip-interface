@@ -153,7 +153,7 @@ async function imageMessage(messageData: MessageData, message: IWebMessageInfo){
     }
     // save to file
     fs.writeFileSync(filePath, buffer)
-    messageData.mediaUrl = filePath
+    messageData.mediaUrl = filePath.split('/').pop()
     if(message.message?.imageMessage?.caption){
         messageData.mediaCaption = message.message.imageMessage.caption
     }
