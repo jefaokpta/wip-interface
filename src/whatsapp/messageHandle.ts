@@ -9,45 +9,47 @@ import IMessage = proto.IMessage;
 export function messageAnalisator(whatsappMessage: IWebMessageInfo) {
     const messageData = new MessageData(whatsappMessage)
 
-    // if(message.message?.audioMessage){
-    //     await audioMessage(messageData, message);
-    // }else if(message.message?.documentMessage){
-    //     await documentMessage(messageData, message);
-    // }else if(message.message?.videoMessage){
-    //     await videoMessage(messageData, message);
+    if(whatsappMessage.message?.audioMessage) {
+        audioMessage(messageData, whatsappMessage)
+            .then(() => sendMediaMessageToApi(messageData))
+        return;
+    }
+    if(whatsappMessage.message?.documentMessage) {
+        documentMessage(messageData, whatsappMessage)
+            .then(() => sendMediaMessageToApi(messageData))
+        return;
+    }
+    if(whatsappMessage.message?.videoMessage) {
+        videoMessage(messageData, whatsappMessage)
+            .then(() => sendMediaMessageToApi(messageData))
+        return;
+    }
     if (whatsappMessage.message?.imageMessage) {
         imageMessage(messageData, whatsappMessage)
-            .then(() => axios.post(`${urlBase}/wip/whatsapp/media-messages`, messageData))
-        // }
-        // else if(message.message?.buttonsMessage){
-        //     console.log('::::::::: BOTAO PERGUNTA')
-        //     console.log(message)
-        //     return
-        // }else if(message.message?.buttonsResponseMessage){
-        //     console.log(';;;;;;;;;;;; BOTAO RESPOSTA')
-        //     console.log(message)
-        //     messageData.message = message.message
-        //     return axios.post(`${urlBase}/api/messages/responses`, messageData)
-        // } else if(message.message?.contactMessage){
-        //     console.log(';;;;;;;;;;;;; RECEBIDO CONTATO')
-        //     const vcardCuted = message.message.contactMessage.vcard!!.split('waid=')[1];
-        //     messageData.message = {
-        //         conversation: `${message.message.contactMessage.displayName}: ${vcardCuted.split(':')[0]}`
-        //     }
-        // }else if(message.message?.contactsArrayMessage){
-        //     console.log(';;;;;;;;;;;;; RECEBIDO ARRAY CONTATOS')
-        //     messageData.message = {conversation: ''}
-        //     message.message.contactsArrayMessage.contacts!!.forEach(contact => {
-        //         const vcardCuted = contact.vcard!!.split('waid=')[1];
-        //         messageData.message!!.conversation += `${contact.displayName}: ${vcardCuted.split(':')[0]} \n`
-        //     })
-    } else if (whatsappMessage.message?.conversation) {
+            .then(() => sendMediaMessageToApi(messageData))
+        return
+    }
+    if(whatsappMessage.message?.contactMessage) {
+        console.log(';;;;;;;;;;;;; RECEBIDO CONTATO')
+        const vcardCuted = whatsappMessage.message.contactMessage.vcard!!.split('waid=')[1];
+        return;
+    }
+    if(whatsappMessage.message?.contactsArrayMessage) {
+        console.log(';;;;;;;;;;;;; RECEBIDO ARRAY CONTATOS')
+        return
+    }
+    if (whatsappMessage.message?.conversation) {
         messageData.text = whatsappMessage.message?.conversation
         axios.post(`${urlBase}/wip/whatsapp/text-messages`, messageData)
             .catch(err => console.log('ERRO 🧨 AO ENVIAR MENSAGEM DE TEXTO', err.message))
-    } else {
-        console.log('ERRO: 🤨 TIPO DE MENSAGEM DESCONHECIDA')
+        return
     }
+    console.log('ERRO: 🤨 TIPO DE MENSAGEM DESCONHECIDA', whatsappMessage)
+}
+
+function sendMediaMessageToApi(messageData: MessageData) {
+    axios.post(`${urlBase}/wip/whatsapp/media-messages`, messageData)
+        .catch(err => console.log('ERRO 🧨 AO ENVIAR MENSAGEM DE MÍDIA', err.message))
 }
 
 function getDiffMinutes(surveyTime: Date): number {
