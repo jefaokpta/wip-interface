@@ -1,10 +1,9 @@
 import {proto} from "@adiwajshing/baileys";
-import IMessage = proto.IMessage;
-import IMessageKey = proto.IMessageKey;
 import IWebMessageInfo = proto.IWebMessageInfo;
 import {Chatbot} from "./chatbot";
 
 type StringNullable = string | null | undefined
+
 export class MessageData {
     messageId: StringNullable
     controlNumber: number | undefined
