@@ -4,7 +4,6 @@ import {MessageData} from "../model/messageData";
 import {Whatsapp} from "../model/whatsapp";
 import {MediaMessage} from "../model/mediaMessage";
 import {proto} from "@adiwajshing/baileys";
-import WebMessageInfo = proto.WebMessageInfo;
 
 
 const exec =  util.promisify(require("child_process").exec);
@@ -16,7 +15,6 @@ export async function sendTxt(message: MessageData) {
     message.messageId = messageSended.key.id
     message.timestampInSeconds = messageSended.messageTimestamp.low
     message.messageStatus = messageSended.status || 2
-    console.log('MENSAGEM DE TEXTO ENVIADA', message.messageId)
     return message
 }
 
@@ -63,7 +61,7 @@ export function sendButtonsMessage(message: MessageData) {
 
 export async function sendMediaMessage(fileUpload: MediaMessage) {
     Whatsapp.sock.sendMessage(fileUpload.remoteJid, await messageOptions(fileUpload))
-        .catch((error: any) => console.log('CAGOU', error))
+        .catch((error: any) => console.log('CAGOU ENVIAR MEDIA PRO WHATSAPP', error))
 }
 
 async function messageOptions(fileUpload: MediaMessage) {
