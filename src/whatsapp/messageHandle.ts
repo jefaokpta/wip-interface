@@ -17,7 +17,7 @@ export function messageAnalisator(whatsappMessage: IWebMessageInfo) {
     //     await videoMessage(messageData, message);
     if (whatsappMessage.message?.imageMessage) {
         imageMessage(messageData, whatsappMessage)
-            // .then(() => axios.post(`${urlBase}/wip/whatsapp/media-messages`, messageData))
+            .then(() => axios.post(`${urlBase}/wip/whatsapp/media-messages`, messageData))
         // }
         // else if(message.message?.buttonsMessage){
         //     console.log('::::::::: BOTAO PERGUNTA')
@@ -118,7 +118,7 @@ async function documentMessage(messageData: MessageData, message: IWebMessageInf
     fs.writeFileSync(filePath, buffer)
     messageData.mediaUrl = filePath
     messageData.mediaFileLength = message.message?.documentMessage?.fileLength
-    messageData.mediaPageCount = message.message?.documentMessage?.pageCount
+    messageData.pdfPageCount = message.message?.documentMessage?.pageCount
     messageData.mediaFileTitle = fileTitle
 }
 

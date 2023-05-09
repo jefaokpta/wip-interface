@@ -20,7 +20,7 @@ messageController.post('/', async (req, res) => {
 })
 
 chatbotController.post('/', (req, res) => {
-    sendChatbot(req.body, Boolean(req.query.invalidOption))
+    sendChatbot(req.body, req.query.invalidOption === 'true')
     res.sendStatus(200)
 })
 

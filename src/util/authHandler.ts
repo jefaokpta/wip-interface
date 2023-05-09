@@ -1,10 +1,10 @@
 import fs from "fs";
-import {mediaFolder, urlBase} from "./staticVar";
+import {authFolder, urlBase} from "./staticVar";
 import axios from "axios";
 
 const controlNumber = process.env.CONTROL_NUMBER || '100023'
 let authFolderPath = `./auth_info_multi-${controlNumber}`
-let authFolderPathBkp = `${mediaFolder}/auths/auth_info_multi-${controlNumber}`
+let authFolderPathBkp = `${authFolder}/auth_info_multi-${controlNumber}`
 
 export function authFolderRestore() {
     if (!fs.existsSync(authFolderPath)) {

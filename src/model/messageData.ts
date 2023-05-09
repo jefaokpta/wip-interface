@@ -4,22 +4,23 @@ import IMessageKey = proto.IMessageKey;
 import IWebMessageInfo = proto.IWebMessageInfo;
 import {Chatbot} from "./chatbot";
 
+type StringNullable = string | null | undefined
 export class MessageData {
-    messageId: string | undefined | null
+    messageId: StringNullable
     controlNumber: number | undefined
-    whatsapp: string | undefined | null
+    whatsapp: StringNullable
     timestampInSeconds: number | Long | null | undefined
-    messageStatus: number
-    fromMe: boolean
     instanceId: string | undefined
-    text: string | undefined | null
+    fromMe: boolean
+    text: StringNullable
+    messageStatus: number
     mediaMessage: boolean
     mediaType: string | undefined
     mediaUrl: string | undefined
     mediaFileLength: number | Long | null | undefined
-    mediaPageCount: number | null | undefined
-    mediaFileTitle: string | null | undefined
-    mediaCaption: string | null | undefined
+    pdfPageCount: number | null | undefined
+    mediaFileTitle: StringNullable
+    mediaCaption: StringNullable
     chatbot: Chatbot | null | undefined
 
     constructor(message: IWebMessageInfo) {

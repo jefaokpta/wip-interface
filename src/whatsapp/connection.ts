@@ -100,7 +100,6 @@ export const connectWhatsApp = async (waVersion: WAVersion) => {
 
     /** ATUALIZACAO DE STATUS DE MSG ENVIADA */
     sock.ev.on('messages.update', m => {
-        console.log('ATUALIZANDO STATUS DE MENSAGEM', m[0])
         axios.post(`${urlBase}/wip/whatsapp/message-status`, {
             messageId: m[0].key.id,
             controlNumber: Number(process.env.CONTROL_NUMBER) || 100023,
