@@ -20,6 +20,7 @@ export class MessageData {
     pdfPageCount: number | null | undefined
     mediaFileTitle: StringNullable
     mediaCaption: StringNullable
+    isVoiceMessage: boolean | null | undefined
     chatbot: Chatbot | null | undefined
 
     constructor(message: IWebMessageInfo) {

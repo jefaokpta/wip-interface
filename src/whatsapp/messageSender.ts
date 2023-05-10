@@ -3,7 +3,6 @@ import {mediaFolder} from "../util/staticVar";
 import {MessageData} from "../model/messageData";
 import {Whatsapp} from "../model/whatsapp";
 import {MediaMessage} from "../model/mediaMessage";
-import {proto} from "@adiwajshing/baileys";
 
 
 const exec =  util.promisify(require("child_process").exec);
@@ -13,7 +12,7 @@ const FILE_URL = `${mediaFolder}/outbox`
 export async function sendTxt(message: MessageData) {
     const messageSended = await Whatsapp.sock.sendMessage(message.whatsapp!.concat('@s.whatsapp.net'), {text: message.text!})
     message.messageId = messageSended.key.id
-    message.timestampInSeconds = messageSended.messageTimestamp.low
+    message.timestampInSeconds = Number(messageSended.messageTimestamp)
     message.messageStatus = messageSended.status || 2
     return message
 }
