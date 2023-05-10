@@ -2,12 +2,11 @@ import util from "util";
 import {mediaFolder} from "../util/staticVar";
 import {MessageData} from "../model/messageData";
 import {Whatsapp} from "../model/whatsapp";
-import {MediaMessage} from "../model/mediaMessage";
 
 
 const exec =  util.promisify(require("child_process").exec);
 
-const FILE_URL = `${mediaFolder}/outbox`
+const FILE_URL = `${mediaFolder}/uploads`
 
 export async function sendTxt(message: MessageData) {
     const messageSended = await Whatsapp.sock.sendMessage(message.whatsapp!.concat('@s.whatsapp.net'), {text: message.text!})
@@ -58,18 +57,17 @@ export function sendButtonsMessage(message: MessageData) {
         .catch((error: any) => console.log('ERRO AO ENVIAR BOTOES ',error))
 }
 
-export async function sendMediaMessage(fileUpload: MediaMessage) {
-    Whatsapp.sock.sendMessage(fileUpload.remoteJid, await messageOptions(fileUpload))
-        .catch((error: any) => console.log('CAGOU ENVIAR MEDIA PRO WHATSAPP', error))
+export async function sendMediaMessage(message: MessageData) {
+    Whatsapp.sock.sendMessage(message.whatsapp!.concat('@s.whatsapp.net'), await messageOptions(fileUpload))
 }
 
-async function messageOptions(fileUpload: MediaMessage) {
-    switch (fileUpload.fileType) {
+async function messageOptions(message: MessageData) {
+    switch (message.mediaType) {
         case 'IMAGE':
             return {
-                image: {url: `${FILE_URL}/${fileUpload.filePath}`},
-                caption: fileUpload.caption,
-                mimetype: imageMimeType(fileUpload.filePath).mimeType,
+                image: {url: `${FILE_URL}/${message.mediaFileTitle}`},
+                caption: message.mediaCaption,
+                mimetype: imageMimeType(message.mediaFileTitle!).mimeType,
                 jpegThumbnail: undefined,
             }
         case 'DOCUMENT':
