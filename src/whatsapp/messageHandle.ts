@@ -35,21 +35,33 @@ export function messageAnalisator(whatsappMessage: IWebMessageInfo) {
         return
     }
     if(whatsappMessage.message?.contactMessage) {
-        console.log(';;;;;;;;;;;;; RECEBIDO CONTATO')
-        const vcardCuted = whatsappMessage.message.contactMessage.vcard!!.split('waid=')[1];
+        const name = whatsappMessage.message.contactMessage.displayName
+        const vcardTel = whatsappMessage.message.contactMessage.vcard!.split('waid=')[1].split(':')[0]
+        messageData.text = `CONTATO: ${name} - ${vcardTel}`
+        sendMediaMessageToApi(messageData)
         return;
     }
     if(whatsappMessage.message?.contactsArrayMessage) {
-        console.log(';;;;;;;;;;;;; RECEBIDO ARRAY CONTATOS')
+        messageData.text = 'CONTATOS:\n'
+        whatsappMessage.message.contactsArrayMessage.contacts?.forEach(contact => {
+            const name = contact.displayName
+            const vcardTel = contact.vcard!.split('waid=')[1].split(':')[0]
+            messageData.text += `${name} - ${vcardTel}\n`
+        } )
+        sendTextMessageToApi(messageData)
         return
     }
     if (whatsappMessage.message?.conversation) {
         messageData.text = whatsappMessage.message?.conversation
-        axios.post(`${urlBase}/wip/whatsapp/text-messages`, messageData)
-            .catch(err => console.log('ERRO 🧨 AO ENVIAR MENSAGEM DE TEXTO', err.message))
+        sendTextMessageToApi(messageData);
         return
     }
     console.log('ERRO: 🤨 TIPO DE MENSAGEM DESCONHECIDA', whatsappMessage)
+}
+
+function sendTextMessageToApi(messageData: MessageData) {
+    axios.post(`${urlBase}/wip/whatsapp/text-messages`, messageData)
+        .catch(err => console.log('ERRO 🧨 AO ENVIAR MENSAGEM DE TEXTO', err.message))
 }
 
 function sendMediaMessageToApi(messageData: MessageData) {
