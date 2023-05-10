@@ -11,7 +11,6 @@ import {MessageData} from "../model/messageData";
 
 export const messageController = express()
 export const chatbotController = express()
-export const mediaMessageController = express()
 export const buttonMessageController = express()
 export const blockContact = express()
 export const isOnWhatsapp = express()
@@ -43,11 +42,5 @@ blockContact.post('/', (req, res) => {
 
 buttonMessageController.post('/', (req, res) => {
     sendButtonsMessage(req.body)
-    res.sendStatus(200)
-})
-
-mediaMessageController.post('/', (req, res) => {
-    console.log('ENVIANDO MEDIA MESSAGE ', req.body)
-    sendMediaMessage(req.body)
     res.sendStatus(200)
 })

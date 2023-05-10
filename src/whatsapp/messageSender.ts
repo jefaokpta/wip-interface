@@ -1,10 +1,8 @@
-import util from "util";
 import {mediaFolder} from "../util/staticVar";
 import {MessageData} from "../model/messageData";
 import {Whatsapp} from "../model/whatsapp";
 
-
-const exec =  util.promisify(require("child_process").exec);
+const execSync = require('child_process').execSync;
 
 const FILE_URL = `${mediaFolder}/uploads`
 
@@ -58,10 +56,14 @@ export function sendButtonsMessage(message: MessageData) {
 }
 
 export async function sendMediaMessage(message: MessageData) {
-    Whatsapp.sock.sendMessage(message.whatsapp!.concat('@s.whatsapp.net'), await messageOptions(fileUpload))
+    const messageSended = await Whatsapp.sock.sendMessage(message.whatsapp!.concat('@s.whatsapp.net'), messageOptions(message))
+    message.messageId = messageSended.key.id
+    message.timestampInSeconds = Number(messageSended.messageTimestamp)
+    message.messageStatus = messageSended.status || 2
+    return message // todo: java move file to another folder and rename it with the message id
 }
 
-async function messageOptions(message: MessageData) {
+function messageOptions(message: MessageData) {
     switch (message.mediaType) {
         case 'IMAGE':
             return {
@@ -72,52 +74,48 @@ async function messageOptions(message: MessageData) {
             }
         case 'DOCUMENT':
             return {
-                document: {url: `${FILE_URL}/${fileUpload.filePath}`},
+                document: {url: `${FILE_URL}/${message.mediaFileTitle}`},
                 mimetype: 'application/pdf',
-                fileName: fileUpload.filePath,
+                fileName: message.mediaFileTitle,
             }
         case 'VIDEO':
             return {
-                video: {url: `${FILE_URL}/${fileUpload.filePath}`},
-                caption: fileUpload.caption,
+                video: {url: `${FILE_URL}/${message.mediaFileTitle}`},
+                caption: message.mediaCaption,
                 gifPlayback: undefined,
                 jpegThumbnail: undefined,
             }
         case 'AUDIO':
-            let audioFile = `${FILE_URL}/${fileUpload.filePath}`
-            if (fileUpload.ptt) {
-                audioFile = await convertAudioToM4a(fileUpload.filePath)
+            let audioFile = `${FILE_URL}/${message.mediaFileTitle}`
+            if (message.isVoiceMessage) {
+                audioFile = convertAudioToM4a(message.mediaFileTitle!)
             }
             return {
                 audio: {url: audioFile},
                 mimetype: 'audio/mp4',
-                ptt: fileUpload.ptt,
+                ptt: message.isVoiceMessage,
                 seconds: undefined
             }
         default:
             return {
-                document: {url: `${FILE_URL}/${fileUpload.filePath}`},
+                document: {url: `${FILE_URL}/${message.mediaFileTitle}`},
                 mimetype: 'application/pdf',
-                fileName: fileUpload.filePath,
+                fileName: message.mediaFileTitle,
             }
     }
 }
 
-async function convertAudioToM4a(filePath: string) {
+function convertAudioToM4a(filePath: string) { // todo: verificar se funciona
     const file = `${FILE_URL}/${filePath}`
     const fileName = filePath.split('.')[0]
     const m4aFile = `${FILE_URL}/${fileName}.m4a`
     const command = `ffmpeg -i ${file} -vn -ar 44100 -ac 1 ${m4aFile} -y`
     try {
-        const {error, stdout, stderr} = await exec(command)
-        if (error) {
-            console.log('ERRO AO CONVERTER AUDIO: ', error)
-            return file
-        }
-        console.log('AUDIO M4A CONVERTIDO COM SUCESSO: ', m4aFile)
+        execSync(command)
+        console.log('AUDIO CONVERTIDO COM SUCESSO')
         return m4aFile
-    } catch (errorTry) {
-        console.log('ERRO AO CONVERTER AUDIO: ', errorTry)
+    } catch (error) {
+        console.log('ERRO AO CONVERTER AUDIO: ', error)
         return file
     }
 }
