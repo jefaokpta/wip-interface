@@ -18,8 +18,8 @@ export class MessageData {
     mediaUrl: string | undefined
     mediaFileLength: number | Long | null | undefined
     pdfPageCount: number | null | undefined
-    mediaFileTitle: StringNullable
     mediaCaption: StringNullable
+    mediaFileName: StringNullable
     isVoiceMessage: boolean | null | undefined
     chatbot: Chatbot | null | undefined
 

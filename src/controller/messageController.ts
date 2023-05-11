@@ -6,7 +6,6 @@ import {
     sendMediaMessage,
     sendTxt
 } from "../whatsapp/messageSender";
-import {MessageData} from "../model/messageData";
 
 
 export const messageController = express()
@@ -16,12 +15,11 @@ export const blockContact = express()
 export const isOnWhatsapp = express()
 
 messageController.post('/', async (req, res) => {
-    const message = JSON.parse(req.body) as MessageData
-    if(message.mediaMessage) {
-        res.send(await sendMediaMessage(message))
+    if(req.body.mediaMessage) {
+        res.send(await sendMediaMessage(req.body))
         return
     }
-    res.send(await sendTxt(message))
+    res.send(await sendTxt(req.body))
 })
 
 chatbotController.post('/', (req, res) => {

@@ -124,8 +124,8 @@ function defineMimeTypeAudioMedia(message: IWebMessageInfo){
 async function documentMessage(messageData: MessageData, message: IMessage, messageId: string) {
     messageData.mediaMessage = true
     messageData.mediaType = 'DOCUMENT'
-    const fileTitle = message.documentMessage!.fileName
-    const fileExtension = fileTitle!!.split('.').pop()
+    const fileName = message.documentMessage!.fileName
+    const fileExtension = fileName!!.split('.').pop()
     const filePath = `${mediaFolder}/document-${messageId}.${fileExtension}`
     const stream = await downloadContentFromMessage(message.documentMessage!, 'document')
     let buffer = Buffer.from([])
@@ -137,7 +137,7 @@ async function documentMessage(messageData: MessageData, message: IMessage, mess
     messageData.mediaUrl = filePath.split('/').pop()
     messageData.mediaFileLength = Number(message.documentMessage?.fileLength)
     messageData.pdfPageCount = message.documentMessage?.pageCount
-    messageData.mediaFileTitle = fileTitle
+    messageData.mediaFileName = fileName
     messageData.mediaCaption = message.documentMessage?.caption
 }
 
