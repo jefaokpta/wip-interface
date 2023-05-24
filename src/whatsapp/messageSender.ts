@@ -66,6 +66,12 @@ export async function sendMediaMessage(message: MessageData) {
     fs.rename(`${UPLOAD_FOLDER}/${message.mediaFileName}`, `${MEDIA_FOLDER}/${message.mediaUrl}`, (err: any) => {
         if (err) console.log('ERRO 🧨 AO MOVER MEDIA ENVIADA ', err)
     })
+    if(message.isVoiceMessage) {
+        const m4aFile = `${UPLOAD_FOLDER}/${message.mediaFileName!.split('.')[0]}.m4a`
+        fs.remove(m4aFile, (err: any) => {
+            if (err) console.log('ERRO 🧨 AO REMOVER AUDIO CONVERTIDO M4A ', err)
+        })
+    }
     return message
 }
 
