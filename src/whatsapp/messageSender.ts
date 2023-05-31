@@ -87,6 +87,7 @@ function messageOptions(message: MessageData) {
         case 'DOCUMENT':
             return {
                 document: {url: `${UPLOAD_FOLDER}/${message.mediaFileName}`},
+                caption: message.mediaCaption,
                 mimetype: 'application/pdf',
                 fileName: message.mediaFileName,
             }

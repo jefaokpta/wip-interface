@@ -2,6 +2,7 @@ import express from 'express'
 import {fetchLatestBaileysVersion} from "@adiwajshing/baileys";
 import {connectWhatsApp} from "./whatsapp/connection";
 import {chatbotController, messageController} from "./controller/messageController";
+import {profilePicture} from "./controller/profilePictureController";
 
 
 const port = process.env.PORT || 3007
@@ -19,7 +20,7 @@ router.use('/whatsapp/messages/text', messageController)
 router.use('/whatsapp/messages/chatbot', chatbotController)
 // router.use('/whats/messages/buttons', buttonMessageController)
 // router.use('/whats/messages/medias', mediaMessageController)
-// router.use('/whats/profile/picture', profilePicture)
+router.use('/whatsapp/profile/picture', profilePicture)
 // router.use('/whats/contacts/block', blockContact)
 // router.use('/whats/contacts/is-on-whats', isOnWhatsapp)
 

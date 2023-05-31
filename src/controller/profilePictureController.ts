@@ -3,14 +3,13 @@ import {Whatsapp} from "../model/whatsapp";
 
 export const profilePicture = express()
 
-profilePicture.get('/:remoteJid', (req, res) => {
-    Whatsapp.sock.profilePictureUrl(req.params.remoteJid)
+profilePicture.get('/:whatsappNumber', (req, res) => {
+    Whatsapp.sock.profilePictureUrl(req.params.whatsappNumber.concat('@s.whatsapp.net'))
         .then((data: any) => {
-            //console.log(data)
-            res.json({picture: data.toString()})
+            res.send(data.toString())
         })
         .catch((error: any) => {
-            console.log(error.message)
+            console.log('🧨 ERRO AO BUSCAR FOTO DO CONTATO: ', error.message)
             res.status(404).json({
                 errorMessage: error.message
             })
