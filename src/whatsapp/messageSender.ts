@@ -1,6 +1,7 @@
 import {mediaFolder} from "../util/staticVar";
 import {MessageData} from "../model/messageData";
 import {Whatsapp} from "../model/whatsapp";
+import {mediaDateFormater} from "../util/dateHandler";
 
 const execSync = require('child_process').execSync;
 const fs = require('fs')
@@ -62,7 +63,7 @@ export async function sendMediaMessage(message: MessageData) {
     message.messageId = messageSended.key.id
     message.timestampInSeconds = Number(messageSended.messageTimestamp)
     message.messageStatus = messageSended.status || 2
-    message.mediaUrl = `${message.mediaType?.toLowerCase()}-${messageSended.key.id}.${message.mediaFileName?.split('.').pop()}`
+    message.mediaUrl = `${message.mediaType?.toLowerCase()}-${mediaDateFormater()}-${messageSended.key.id}.${message.mediaFileName?.split('.').pop()}`
     fs.rename(`${UPLOAD_FOLDER}/${message.mediaFileName}`, `${MEDIA_FOLDER}/${message.mediaUrl}`, (err: any) => {
         if (err) console.log('ERRO 🧨 AO MOVER MEDIA ENVIADA ', err)
     })
@@ -118,7 +119,7 @@ function messageOptions(message: MessageData) {
     }
 }
 
-function convertAudioToM4a(filePath: string) { // todo: verificar se funciona no container
+function convertAudioToM4a(filePath: string) {
     const file = `${UPLOAD_FOLDER}/${filePath}`
     const fileName = filePath.split('.')[0]
     const m4aFile = `${UPLOAD_FOLDER}/${fileName}.m4a`
