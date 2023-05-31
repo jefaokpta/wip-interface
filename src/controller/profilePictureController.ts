@@ -10,8 +10,6 @@ profilePicture.get('/:whatsappNumber', (req, res) => {
         })
         .catch((error: any) => {
             console.log('🧨 ERRO AO BUSCAR FOTO DO CONTATO: ', error.message)
-            res.status(404).json({
-                errorMessage: error.message
-            })
+            res.sendStatus(500)
         })
 })
