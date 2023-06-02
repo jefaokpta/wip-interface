@@ -2,7 +2,7 @@ import makeWASocket, {
     DisconnectReason,
     useMultiFileAuthState,
     WAVersion
-} from "@adiwajshing/baileys";
+} from "@whiskeysockets/baileys";
 import {Boom} from "@hapi/boom";
 import {authFolderDuplicate, authFolderRestore, confirmAuthToApi, deleteAuthFolder} from "../util/authHandler";
 import {sendQrCode} from "../util/qrCodeHandle";

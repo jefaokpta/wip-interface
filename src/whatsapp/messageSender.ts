@@ -32,29 +32,9 @@ export async function blockUnblockContact(blockData: { remoteJid: string, action
     await Whatsapp.sock.updateBlockStatus(blockData.remoteJid, blockData.action)
 }
 
-export function sendButtonsMessage(message: MessageData) {
-    // send a buttons message!
-    // const buttons = [ // desativado por enquanto até resolver o problema do botão de opção
-    //     {buttonId: '3', buttonText: {displayText: '😃'}, type: 1},
-    //     {buttonId: '2', buttonText: {displayText: '😐'}, type: 1},
-    //     {buttonId: '1', buttonText: {displayText: '😩'}, type: 1}
-    // ]
-    /**const buttonMediaMessage = { // this is a BUTTON media message
-        image: {url: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg'},
-        caption: message.btnText,
-        footer: 'msg de foooter',
-        buttons: buttons,
-        headerType: 4
-    }*/
-    // const buttonMessage = { // desativado por enquanto até resolver o problema do botão de opção
-    //     text: message.btnText!!,
-    //     footer: message.btnFooterText,
-    //     buttons: buttons,
-    //     headerType: 1
-    // }
-    // sock.sendMessage (message.remoteJid, buttonMessage)
+export function sendSurveyMessage(message: MessageData) {
     const fakeButtonMessage = `${message.text} \n 3 => 😃 \n 2 => 😐 \n 1 => 😩`
-    Whatsapp.sock.sendMessage (message.whatsapp!, {text: fakeButtonMessage})
+    Whatsapp.sock.sendMessage (message.whatsapp!.concat('@s.whatsapp.net'), {text: fakeButtonMessage})
         .catch((error: any) => console.log('ERRO AO ENVIAR BOTOES ',error))
 }
 

@@ -1,9 +1,9 @@
 import express from 'express'
-import {fetchLatestBaileysVersion} from "@adiwajshing/baileys";
+import {fetchLatestBaileysVersion} from "@whiskeysockets/baileys";
 import {connectWhatsApp} from "./whatsapp/connection";
 import {
     blockContact,
-    buttonMessageController,
+    surveyMessageController,
     chatbotController,
     isOnWhatsapp,
     messageController
@@ -23,7 +23,7 @@ fetchLatestBaileysVersion()
 
 router.use('/whatsapp/messages/text', messageController)
 router.use('/whatsapp/messages/chatbot', chatbotController)
-router.use('/whatsapp/messages/survey', buttonMessageController)
+router.use('/whatsapp/messages/survey', surveyMessageController)
 router.use('/whatsapp/profile/picture', profilePicture)
 router.use('/whatsapp/contacts/block', blockContact)
 router.use('/whatsapp/contacts/is-on-whats', isOnWhatsapp)

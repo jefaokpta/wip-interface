@@ -1,4 +1,4 @@
-import {downloadContentFromMessage, proto} from "@adiwajshing/baileys";
+import {downloadContentFromMessage, proto} from "@whiskeysockets/baileys";
 import axios from "axios";
 import {mediaFolder, urlBase} from "../util/staticVar";
 import {MessageData} from "../model/messageData";
@@ -73,27 +73,6 @@ function sendMediaMessageToApi(messageData: MessageData) {
 function getDiffMinutes(surveyTime: Date): number {
     const diff = new Date().getTime() - surveyTime.getTime();
     return Math.floor(diff / (1000 * 60));
-}
-
-function fakeButtonMessageResponse(message: IWebMessageInfo){
-    const responseText = message.message?.conversation || message.message?.extendedTextMessage?.text || 0
-    let responseNumber = 0
-    if (typeof responseText === "string") {
-        responseNumber = parseInt(responseText)
-        if(isNaN(responseNumber)){
-            responseNumber = 0
-        }
-    }
-    if(responseNumber > 3) {
-        responseNumber = 0
-    }
-    console.log(';;;;;;;;;;;;; RESPONSE NUMBER  ' + responseNumber)
-const fakeButtonResponse: IMessage ={
-        buttonsResponseMessage: {
-            selectedButtonId: responseNumber.toString(),
-        }
-}
-    return fakeButtonResponse
 }
 
 async function audioMessage(messageData: MessageData, message: IWebMessageInfo){

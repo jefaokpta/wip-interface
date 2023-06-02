@@ -1,4 +1,4 @@
-import {proto} from "@adiwajshing/baileys";
+import {proto} from "@whiskeysockets/baileys";
 import IWebMessageInfo = proto.IWebMessageInfo;
 import {Chatbot} from "./chatbot";
 

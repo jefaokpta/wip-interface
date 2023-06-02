@@ -2,7 +2,7 @@ import express from "express";
 import {
     blockUnblockContact,
     checkIfIsOnWhatsapp,
-    sendButtonsMessage, sendChatbot,
+    sendSurveyMessage, sendChatbot,
     sendMediaMessage,
     sendTxt
 } from "../whatsapp/messageSender";
@@ -10,7 +10,7 @@ import {
 
 export const messageController = express()
 export const chatbotController = express()
-export const buttonMessageController = express()
+export const surveyMessageController = express()
 export const blockContact = express()
 export const isOnWhatsapp = express()
 
@@ -38,7 +38,7 @@ blockContact.post('/', (req, res) => {
     res.status(200).send()
 })
 
-buttonMessageController.post('/', (req, res) => {
-    sendButtonsMessage(req.body)
+surveyMessageController.post('/', (req, res) => {
+    sendSurveyMessage(req.body)
     res.sendStatus(200)
 })
