@@ -35,7 +35,7 @@ export async function blockUnblockContact(blockData: { remoteJid: string, action
 export function sendSurveyMessage(message: MessageData) {
     const fakeButtonMessage = `${message.text} \n 3 => 😃 \n 2 => 😐 \n 1 => 😩`
     Whatsapp.sock.sendMessage (message.whatsapp!.concat('@s.whatsapp.net'), {text: fakeButtonMessage})
-        .catch((error: any) => console.log('ERRO AO ENVIAR BOTOES ',error))
+        .catch((error: any) => console.log('ERRO AO ENVIAR SURVEY ',error))
 }
 
 export async function sendMediaMessage(message: MessageData) {
@@ -49,7 +49,7 @@ export async function sendMediaMessage(message: MessageData) {
     })
     if(message.isVoiceMessage) {
         const m4aFile = `${UPLOAD_FOLDER}/${message.mediaFileName!.split('.')[0]}.m4a`
-        fs.remove(m4aFile, (err: any) => {
+        fs.rm(m4aFile, (err: any) => {
             if (err) console.log('ERRO 🧨 AO REMOVER AUDIO CONVERTIDO M4A ', err)
         })
     }
