@@ -57,6 +57,14 @@ export function messageAnalisator(whatsappMessage: IWebMessageInfo) {
         sendTextMessageToApi(messageData);
         return
     }
+    if (whatsappMessage.message?.extendedTextMessage) {
+        console.log('INFO: 📩 MENSAGEM DE TEXTO RECEBIDA', whatsappMessage.message.extendedTextMessage)
+        messageData.text = whatsappMessage.message.extendedTextMessage.text
+        messageData.quoteId = whatsappMessage.message.extendedTextMessage.contextInfo?.stanzaId
+        messageData.quoteText = whatsappMessage.message.extendedTextMessage.contextInfo?.quotedMessage?.conversation
+        sendTextMessageToApi(messageData);
+        return
+    }
     console.log('ERRO: 🤨 TIPO DE MENSAGEM DESCONHECIDA', whatsappMessage)
 }
 
@@ -68,11 +76,6 @@ function sendTextMessageToApi(messageData: MessageData) {
 function sendMediaMessageToApi(messageData: MessageData) {
     axios.post(`${urlBase}/wip/whatsapp/media-messages`, messageData)
         .catch(err => console.log('ERRO 🧨 AO ENVIAR MENSAGEM DE MÍDIA', err.message, messageData))
-}
-
-function getDiffMinutes(surveyTime: Date): number {
-    const diff = new Date().getTime() - surveyTime.getTime();
-    return Math.floor(diff / (1000 * 60));
 }
 
 async function audioMessage(messageData: MessageData, message: IWebMessageInfo){

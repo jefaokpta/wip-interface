@@ -22,6 +22,8 @@ export class MessageData {
     mediaFileName: StringNullable
     isVoiceMessage: boolean | null | undefined
     chatbot: Chatbot | null | undefined
+    quoteId: StringNullable
+    quoteText: StringNullable
 
     constructor(message: IWebMessageInfo) {
         this.messageId = message.key.id
