@@ -43,7 +43,7 @@ export async function sendMediaMessage(message: MessageData) {
     message.messageId = messageSended.key.id
     message.timestampInSeconds = Number(messageSended.messageTimestamp)
     message.messageStatus = messageSended.status || 2
-    message.mediaUrl = `${message.mediaType?.toLowerCase()}-${mediaDateFormater()}-${messageSended.key.id}.${message.mediaFileName?.split('.').pop()}`
+    message.mediaUrl = `${mediaDateFormater()}-${message.controlNumber}-${message.mediaType?.toLowerCase()}-${messageSended.key.id}.${message.mediaFileName?.split('.').pop()}`
     fs.rename(`${UPLOAD_FOLDER}/${message.mediaFileName}`, `${MEDIA_FOLDER}/${message.mediaUrl}`, (err: any) => {
         if (err) console.log('ERRO 🧨 AO MOVER MEDIA ENVIADA ', err)
     })
