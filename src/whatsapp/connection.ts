@@ -14,10 +14,13 @@ import {messageAnalisator} from "./messageHandle";
 
 export const connectWhatsApp = async (waVersion: WAVersion) => {
 
-    console.log(`USANDO WA v${waVersion.join('.')}`)
+    console.log(`WA VERSION PEGO DA LIB: ${waVersion.join('.')}`)
+    console.log('WA VERSION PEGO DA VAR ENV: ', process.env.WA_VERSION)
+    const waVersionChoosed = process.env.WA_VERSION?.split('.').map(v => Number(v)) as WAVersion ?? waVersion
+    console.log(`WA VERSION ESCOLHIDA: ${waVersionChoosed.join('.')}`)
     const { state, saveCreds } = await useMultiFileAuthState(authFolderRestore())
     const sock = makeWASocket({
-        version: waVersion,
+        version: waVersionChoosed,
         auth: state,
         printQRInTerminal: true,
         syncFullHistory: false,
@@ -106,7 +109,7 @@ export const connectWhatsApp = async (waVersion: WAVersion) => {
             whatsapp: m[0].key.remoteJid!.includes(':') ? m[0].key.remoteJid!.split(':')[0] : m[0].key.remoteJid!.split('@')[0],
             timestampInSeconds: 0,
             messageStatus: m[0].update.status,
-            instanceId: process.env.API_PORT || "3007",
+            instanceId: process.env.API_PORT ?? "3007",
             fromMe: m[0].key.fromMe
         }).catch(err => console.log('ERRO 🧨 AO ATUALIZAR STATUS DE MENSAGEM', err.message))
     })

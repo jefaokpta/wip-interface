@@ -11,7 +11,7 @@ import {
 import {profilePicture} from "./controller/profilePictureController";
 
 
-const port = process.env.PORT || 3007
+const port = process.env.PORT ?? 3007
 
 const router = express()
 router.use(express.json())
