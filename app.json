@@ -4,5 +4,6 @@
   "repository": "https://github.com/jefaokpta/wip-interface.git",
   "env": {
     "NODE_ENV": "production",
+    "URL_BASE": "https://endereco-da-api.com"
   }
 }
