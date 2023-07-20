@@ -4,7 +4,7 @@ import makeWASocket, {
     WAVersion
 } from "@whiskeysockets/baileys";
 import {Boom} from "@hapi/boom";
-import {authFolderDuplicate, authFolderRestore, confirmAuthToApi, deleteAuthFolder} from "../util/authHandler";
+import {authFolderDuplicate, authFolderRestore, confirmAuthToApi} from "../util/authHandler";
 import {sendQrCode} from "../util/qrCodeHandle";
 import {Whatsapp} from "../model/whatsapp";
 import axios from "axios";
@@ -18,7 +18,7 @@ export const connectWhatsApp = async (waVersion: WAVersion) => {
     console.log('WA VERSION PEGO DA VAR ENV: ', process.env.WA_VERSION)
     const waVersionChoosed = process.env.WA_VERSION?.split('.').map(v => Number(v)) as WAVersion ?? waVersion
     console.log(`WA VERSION ESCOLHIDA: ${waVersionChoosed.join('.')}`)
-    const { state, saveCreds } = await useMultiFileAuthState(authFolderRestore())
+    const { state, saveCreds } = await useMultiFileAuthState(await authFolderRestore())
     const sock = makeWASocket({
         version: waVersionChoosed,
         auth: state,
@@ -36,7 +36,7 @@ export const connectWhatsApp = async (waVersion: WAVersion) => {
         switch (connection) {
             case 'open':
                 Whatsapp.sock = sock
-                console.log('SISTEMA LOGADO AO WHATSAPP 👍🏼 ')
+                console.log('SISTEMA LOGADO AO WHATSAPP COM SUCESSO 🚀 ')
                 authFolderDuplicate()
                 confirmAuthToApi()
                 break
@@ -52,8 +52,7 @@ export const connectWhatsApp = async (waVersion: WAVersion) => {
                 } else{
                     console.log('SISTEMA DESLOGADO DO WHATSAPP')
                     console.log('!!! ATENCAO!!! AO LER QR CODE NAO PODE TER MENSAGENS PENDENTES')
-                    deleteAuthFolder()
-                    console.log('ARQUIVO DE AUTENTICACAO DELETADO')
+                    console.log('ARQUIVO DE AUTENTICACAO DEVE SER DELETADO')
                     console.log('SISTEMA SERA DESLIGADO EM 5 SEGUNDOS')
                     setTimeout(() => {
                         process.exit(1)

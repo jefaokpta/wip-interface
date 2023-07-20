@@ -1,38 +1,22 @@
 import fs from "fs";
-import {authFolder, urlBase} from "./staticVar";
+import {urlBase} from "./staticVar";
 import axios from "axios";
+import {restoreFolderFromS3, uploadFolderToS3} from "../s3/s3Service";
+import {delay} from "@whiskeysockets/baileys";
 
-const controlNumber = process.env.CONTROL_NUMBER || '100023'
-let authFolderPath = `./auth_info_multi-${controlNumber}`
-let authFolderPathBkp = `${authFolder}/auth_info_multi-${controlNumber}`
-
-export function authFolderRestore() {
-    if (!fs.existsSync(authFolderPath)) {
-        try {
-            fs.cpSync(authFolderPathBkp, authFolderPath, {recursive: true})
-            console.log('INFO: 👍🏼 AUTH FOLDER RESTAURADO COM SUCESSO.')
-        } catch (e) {
-            console.log('ERRO: 🧨 AO RESTAURAR AUTH FOLDER ', e)
-        }
+const controlNumber = process.env.CONTROL_NUMBER ?? '100023'
+const authFolderPath = `./auth_info_multi-${controlNumber}`
+export async function authFolderRestore() {
+    if(!fs.existsSync(authFolderPath) || !fs.readdirSync(authFolderPath).length){
+        await restoreFolderFromS3(authFolderPath.split('/').pop() + '/')
+        console.log('⏱ COMPLETANDO RESTAURACAO DAS AUTHS...')
+        await delay(3000)
     }
     return authFolderPath
 }
 
 export function authFolderDuplicate() {
-    fs.cp(authFolderPath, authFolderPathBkp, {recursive: true, force: true}, (err) => {
-        if (err) console.log('ERRO: AO DUPLICAR AUTH FOLDER', err)
-    });
-}
-
-export function deleteAuthFolder() {
-    fs.rm(authFolderPath, {recursive: true}, (err) => {
-        if (err) console.log('ERRO: AO DELETAR AUTH FOLDER', err)
-        else console.log('INFO: AUTH FOLDER DELETADO.');
-    })
-    fs.rm(authFolderPathBkp, {recursive: true}, (err) => {
-        if (err) console.log('ERRO: AO DELETAR AUTH FOLDER', err)
-        else console.log('INFO: AUTH FOLDER DELETADO.');
-    })
+    uploadFolderToS3(authFolderPath)
 }
 
 export function confirmAuthToApi(){
