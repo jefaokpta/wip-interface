@@ -1,0 +1,8 @@
+{
+  "name": "wip-interface",
+  "description": "Interface de conexao com Whatsapp para o WIP",
+  "repository": "https://github.com/jefaokpta/wip-interface.git",
+  "env": {
+    "NODE_ENV": "production",
+  }
+}

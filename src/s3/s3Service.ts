@@ -1,4 +1,3 @@
-import {readdirSync} from "fs";
 import path from "path";
 import fs from "fs";
 import {GetObjectCommand, ListObjectsCommand, PutObjectCommand, S3Client} from "@aws-sdk/client-s3";
@@ -9,7 +8,7 @@ const s3 = new S3Client({
 
 export function uploadFolderToS3(folderPath: string) {
     console.log('🚚 ATUALIZANDO AUTHS NO S3...')
-    const folderContent = readdirSync(folderPath, { withFileTypes: true });
+    const folderContent = fs.readdirSync(folderPath, { withFileTypes: true });
 
     for (const item of folderContent) {
         const itemPath = path.join(folderPath, item.name);
