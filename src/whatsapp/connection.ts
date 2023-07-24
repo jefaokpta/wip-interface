@@ -8,8 +8,8 @@ import {authFolderDuplicate, authFolderRestore, confirmAuthToApi} from "../util/
 import {sendQrCode} from "../util/qrCodeHandle";
 import {Whatsapp} from "../model/whatsapp";
 import axios from "axios";
-import {urlBase} from "../util/staticVar";
 import {messageAnalisator} from "./messageHandle";
+import {CONTROL_NUMBER, URL_BASE} from "../util/systemConstants";
 
 
 export const connectWhatsApp = async (waVersion: WAVersion) => {
@@ -102,13 +102,12 @@ export const connectWhatsApp = async (waVersion: WAVersion) => {
 
     /** ATUALIZACAO DE STATUS DE MSG ENVIADA */
     sock.ev.on('messages.update', m => {
-        axios.post(`${urlBase}/wip/whatsapp/message-status`, {
+        axios.post(`${URL_BASE}/wip/whatsapp/message-status`, {
             messageId: m[0].key.id,
-            controlNumber: Number(process.env.CONTROL_NUMBER) || 100023,
+            controlNumber: CONTROL_NUMBER,
             whatsapp: m[0].key.remoteJid!.includes(':') ? m[0].key.remoteJid!.split(':')[0] : m[0].key.remoteJid!.split('@')[0],
             timestampInSeconds: 0,
             messageStatus: m[0].update.status,
-            instanceId: process.env.API_PORT ?? "3007",
             fromMe: m[0].key.fromMe
         }).catch(err => console.log('ERRO 🧨 AO ATUALIZAR STATUS DE MENSAGEM', err.message))
     })

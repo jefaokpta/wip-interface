@@ -1,12 +1,12 @@
 import axios from "axios";
-import {urlBase} from "./staticVar";
+import {CONTROL_NUMBER, URL_BASE} from "./systemConstants";
 
 
 export function sendQrCode(qrCode: string) {
-    axios.post(`${urlBase}/wip/whatsapp/register`, {
+    axios.post(`${URL_BASE}/wip/whatsapp/register`, {
         action: 'QR_CODE',
         qrCode: qrCode,
-        controlNumber: process.env.CONTROL_NUMBER ?? 100023,
+        controlNumber: CONTROL_NUMBER,
     })
         .then(() => console.log('QRCODE ENVIADO!'))
         .catch(e => console.log(e.message))

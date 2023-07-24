@@ -1,13 +1,11 @@
-import {mediaFolder} from "../util/staticVar";
 import {MessageData} from "../model/messageData";
 import {Whatsapp} from "../model/whatsapp";
 import {mediaDateFormater} from "../util/dateHandler";
+import {MEDIA_FOLDER, UPLOAD_FOLDER} from "../util/systemConstants";
 
 const execSync = require('child_process').execSync;
 const fs = require('fs')
 
-const UPLOAD_FOLDER = `${mediaFolder}/uploads`
-const MEDIA_FOLDER = `${mediaFolder}`
 
 export async function sendTxt(message: MessageData) {
     const messageSended = await Whatsapp.sock.sendMessage(message.whatsapp!.concat('@s.whatsapp.net'), {text: message.text!})

@@ -1,6 +1,7 @@
 import {proto} from "@whiskeysockets/baileys";
 import IWebMessageInfo = proto.IWebMessageInfo;
 import {Chatbot} from "./chatbot";
+import {CONTROL_NUMBER} from "../util/systemConstants";
 
 type StringNullable = string | null | undefined
 
@@ -9,7 +10,6 @@ export class MessageData {
     controlNumber: number | undefined
     whatsapp: StringNullable
     timestampInSeconds: number | Long | null | undefined
-    instanceId: string | undefined
     fromMe: boolean
     text: StringNullable
     messageStatus: number
@@ -27,12 +27,11 @@ export class MessageData {
 
     constructor(message: IWebMessageInfo) {
         this.messageId = message.key.id
-        this.controlNumber = Number(process.env.CONTROL_NUMBER) || 100023
+        this.controlNumber = CONTROL_NUMBER
         this.whatsapp = message.key.remoteJid?.split('@')[0]
         this.timestampInSeconds = message.messageTimestamp
-        this.messageStatus = message.status || 1
-        this.fromMe = message.key.fromMe || false
-        this.instanceId = process.env.API_PORT || "3007"
+        this.messageStatus = message.status ?? 1
+        this.fromMe = message.key.fromMe ?? false
         this.mediaMessage = false
     }
 

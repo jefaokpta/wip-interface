@@ -1,11 +1,10 @@
 import fs from "fs";
-import {urlBase} from "./staticVar";
 import axios from "axios";
 import {restoreFolderFromS3, uploadFolderToS3} from "../s3/s3Service";
 import {delay} from "@whiskeysockets/baileys";
+import {CONTROL_NUMBER, URL_BASE} from "./systemConstants";
 
-const controlNumber = process.env.CONTROL_NUMBER ?? '100023'
-const authFolderPath = `./auth_info_multi-${controlNumber}`
+const authFolderPath = `./auth_info_multi-${CONTROL_NUMBER}`
 export async function authFolderRestore() {
     if(!fs.existsSync(authFolderPath) || !fs.readdirSync(authFolderPath).length){
         await restoreFolderFromS3(authFolderPath.split('/').pop() + '/')
@@ -20,7 +19,7 @@ export function authFolderDuplicate() {
 }
 
 export function confirmAuthToApi(){
-    axios.post(`${urlBase}/wip/whatsapp/register/confirmed/${controlNumber}`)
+    axios.post(`${URL_BASE}/wip/whatsapp/register/confirmed/${CONTROL_NUMBER}`)
         .then(() => {
             console.log('AUTH CONFIRMADA')
         })

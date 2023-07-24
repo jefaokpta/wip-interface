@@ -1,11 +1,11 @@
 import {downloadContentFromMessage, proto} from "@whiskeysockets/baileys";
 import axios from "axios";
-import {mediaFolder, urlBase} from "../util/staticVar";
 import {MessageData} from "../model/messageData";
 import * as fs from "fs";
 import IWebMessageInfo = proto.IWebMessageInfo;
 import IMessage = proto.IMessage;
 import {mediaDateFormater} from "../util/dateHandler";
+import {MEDIA_FOLDER, URL_BASE} from "../util/systemConstants";
 
 export function messageAnalisator(whatsappMessage: IWebMessageInfo) {
     const messageData = new MessageData(whatsappMessage)
@@ -69,12 +69,12 @@ export function messageAnalisator(whatsappMessage: IWebMessageInfo) {
 }
 
 function sendTextMessageToApi(messageData: MessageData) {
-    axios.post(`${urlBase}/wip/whatsapp/text-messages`, messageData)
+    axios.post(`${URL_BASE}/wip/whatsapp/text-messages`, messageData)
         .catch(err => console.log('ERRO 🧨 AO ENVIAR MENSAGEM DE TEXTO', err.message))
 }
 
 function sendMediaMessageToApi(messageData: MessageData) {
-    axios.post(`${urlBase}/wip/whatsapp/media-messages`, messageData)
+    axios.post(`${URL_BASE}/wip/whatsapp/media-messages`, messageData)
         .catch(err => console.log('ERRO 🧨 AO ENVIAR MENSAGEM DE MÍDIA', err.message, messageData))
 }
 
@@ -83,14 +83,13 @@ async function audioMessage(messageData: MessageData, message: IWebMessageInfo){
     messageData.mediaType = 'AUDIO'
     messageData.isVoiceMessage = message.message?.audioMessage?.ptt
     const mimeTypeMedia = defineMimeTypeAudioMedia(message);
-    const filePath  = `${mediaFolder}/audio-${mediaDateFormater()}-${message.key.id}.${mimeTypeMedia}`
+    const filePath  = `${MEDIA_FOLDER}/audio-${mediaDateFormater()}-${message.key.id}.${mimeTypeMedia}`
     messageData.mediaUrl = filePath.split('/').pop()
     const stream = await downloadContentFromMessage(message.message!.audioMessage!, 'audio')
     let buffer = Buffer.from([])
     for await(const chunk of stream) {
         buffer = Buffer.concat([buffer, chunk])
     }
-    // save to file
     fs.writeFileSync(filePath, buffer)
 }
 
@@ -109,13 +108,12 @@ async function documentMessage(messageData: MessageData, message: IMessage, mess
     messageData.mediaType = 'DOCUMENT'
     const fileName = message.documentMessage!.fileName
     const fileExtension = fileName!!.split('.').pop()
-    const filePath = `${mediaFolder}/document-${mediaDateFormater()}-${messageId}.${fileExtension}`
+    const filePath = `${MEDIA_FOLDER}/document-${mediaDateFormater()}-${messageId}.${fileExtension}`
     const stream = await downloadContentFromMessage(message.documentMessage!, 'document')
     let buffer = Buffer.from([])
     for await(const chunk of stream) {
         buffer = Buffer.concat([buffer, chunk])
     }
-    // save to file
     fs.writeFileSync(filePath, buffer)
     messageData.mediaUrl = filePath.split('/').pop()
     messageData.mediaFileLength = Number(message.documentMessage?.fileLength)
@@ -127,14 +125,13 @@ async function documentMessage(messageData: MessageData, message: IMessage, mess
 async function videoMessage(messageData: MessageData, message: IWebMessageInfo){
     messageData.mediaMessage = true
     messageData.mediaType = 'VIDEO'
-    const filePath  = `${mediaFolder}/video-${mediaDateFormater()}-${message.key.id}.mp4`
+    const filePath  = `${MEDIA_FOLDER}/video-${mediaDateFormater()}-${message.key.id}.mp4`
     messageData.mediaUrl = filePath.split('/').pop()
     const stream = await downloadContentFromMessage(message.message!.videoMessage!, 'video')
     let buffer = Buffer.from([])
     for await(const chunk of stream) {
         buffer = Buffer.concat([buffer, chunk])
     }
-    // save to file
     fs.writeFileSync(filePath, buffer)
     if (message.message?.videoMessage?.caption) {
         messageData.mediaCaption = message.message.videoMessage.caption
@@ -145,7 +142,7 @@ async function imageMessage(messageData: MessageData, message: IWebMessageInfo){
     messageData.mediaMessage = true
     messageData.mediaType = 'IMAGE'
     const mimeTypeMedia = message.message?.imageMessage?.mimetype?.split('/')[1]
-    const filePath  = `${mediaFolder}/image-${mediaDateFormater()}-${message.key.id}.${mimeTypeMedia}`
+    const filePath  = `${MEDIA_FOLDER}/image-${mediaDateFormater()}-${message.key.id}.${mimeTypeMedia}`
     const stream = await downloadContentFromMessage(message.message!.imageMessage!, 'image')
     let buffer = Buffer.from([])
     for await(const chunk of stream) {
