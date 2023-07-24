@@ -20,7 +20,7 @@ export function authFolderDuplicate() {
 }
 
 export function confirmAuthToApi(){
-    axios.post(`${urlBase}/api/register/auth/${controlNumber}`)
+    axios.post(`${urlBase}/wip/whatsapp/register/confirmed/${controlNumber}`)
         .then(() => {
             console.log('AUTH CONFIRMADA')
         })
