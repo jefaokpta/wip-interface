@@ -1,9 +1,9 @@
 import axios from "axios";
-import {CONTROL_NUMBER, URL_BASE} from "./systemConstants";
+import {CONTROL_NUMBER, WIP_API_URL} from "./systemConstants";
 
 
 export function sendQrCode(qrCode: string) {
-    axios.post(`${URL_BASE}/wip/whatsapp/register`, {
+    axios.post(`${WIP_API_URL}/wip/whatsapp/register`, {
         action: 'QR_CODE',
         qrCode: qrCode,
         controlNumber: CONTROL_NUMBER,

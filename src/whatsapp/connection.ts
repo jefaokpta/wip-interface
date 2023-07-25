@@ -9,7 +9,7 @@ import {sendQrCode} from "../util/qrCodeHandle";
 import {Whatsapp} from "../model/whatsapp";
 import axios from "axios";
 import {messageAnalisator} from "./messageHandle";
-import {CONTROL_NUMBER, URL_BASE} from "../util/systemConstants";
+import {CONTROL_NUMBER, WIP_API_URL} from "../util/systemConstants";
 
 
 export const connectWhatsApp = async (waVersion: WAVersion) => {
@@ -102,7 +102,7 @@ export const connectWhatsApp = async (waVersion: WAVersion) => {
 
     /** ATUALIZACAO DE STATUS DE MSG ENVIADA */
     sock.ev.on('messages.update', m => {
-        axios.post(`${URL_BASE}/wip/whatsapp/message-status`, {
+        axios.post(`${WIP_API_URL}/wip/whatsapp/message-status`, {
             messageId: m[0].key.id,
             controlNumber: CONTROL_NUMBER,
             whatsapp: m[0].key.remoteJid!.includes(':') ? m[0].key.remoteJid!.split(':')[0] : m[0].key.remoteJid!.split('@')[0],

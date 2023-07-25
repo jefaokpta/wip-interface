@@ -5,7 +5,7 @@ import * as fs from "fs";
 import IWebMessageInfo = proto.IWebMessageInfo;
 import IMessage = proto.IMessage;
 import {mediaDateFormater} from "../util/dateHandler";
-import {MEDIA_FOLDER, URL_BASE} from "../util/systemConstants";
+import {MEDIA_FOLDER, WIP_API_URL} from "../util/systemConstants";
 
 export function messageAnalisator(whatsappMessage: IWebMessageInfo) {
     const messageData = new MessageData(whatsappMessage)
@@ -69,12 +69,12 @@ export function messageAnalisator(whatsappMessage: IWebMessageInfo) {
 }
 
 function sendTextMessageToApi(messageData: MessageData) {
-    axios.post(`${URL_BASE}/wip/whatsapp/text-messages`, messageData)
+    axios.post(`${WIP_API_URL}/wip/whatsapp/text-messages`, messageData)
         .catch(err => console.log('ERRO 🧨 AO ENVIAR MENSAGEM DE TEXTO', err.message))
 }
 
 function sendMediaMessageToApi(messageData: MessageData) {
-    axios.post(`${URL_BASE}/wip/whatsapp/media-messages`, messageData)
+    axios.post(`${WIP_API_URL}/wip/whatsapp/media-messages`, messageData)
         .catch(err => console.log('ERRO 🧨 AO ENVIAR MENSAGEM DE MÍDIA', err.message, messageData))
 }
 
