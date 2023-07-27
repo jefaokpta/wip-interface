@@ -45,12 +45,6 @@ export async function sendMediaMessage(message: MessageData) {
     // fs.rename(`${UPLOAD_FOLDER}/${message.mediaFileName}`, `${MEDIA_FOLDER}/${message.mediaUrl}`, (err: any) => {
     //     if (err) console.log('ERRO 🧨 AO MOVER MEDIA ENVIADA ', err)
     // })
-    // if(message.isVoiceMessage) {
-    //     const m4aFile = `${UPLOAD_FOLDER}/${message.mediaFileName!.split('.')[0]}.m4a`
-    //     fs.rm(m4aFile, (err: any) => {
-    //         if (err) console.log('ERRO 🧨 AO REMOVER AUDIO CONVERTIDO M4A ', err)
-    //     })
-    // }
     return message
 }
 
@@ -58,7 +52,6 @@ function messageOptions(message: MessageData) {
     switch (message.mediaType) {
         case 'IMAGE':
             return {
-                // image: {url: `${UPLOAD_FOLDER}/${message.mediaFileName}`},
                 image: {url: `${UPLOAD_FOLDER}/${message.mediaFileName}`},
                 caption: message.mediaCaption,
                 mimetype: imageMimeType(message.mediaFileName!).mimeType,
@@ -79,12 +72,8 @@ function messageOptions(message: MessageData) {
                 jpegThumbnail: undefined,
             }
         case 'AUDIO':
-            let audioFile = `${UPLOAD_FOLDER}/${message.mediaFileName}`
-            // if (message.isVoiceMessage) { //todo: parei de converter
-            //     audioFile = convertAudioToM4a(message.mediaFileName!)
-            // }
             return {
-                audio: {url: audioFile},
+                audio: {url: `${UPLOAD_FOLDER}/${message.mediaFileName}`},
                 mimetype: 'audio/mp4',
                 ptt: message.isVoiceMessage,
                 seconds: undefined
@@ -95,21 +84,6 @@ function messageOptions(message: MessageData) {
                 mimetype: 'application/pdf',
                 fileName: message.mediaFileName,
             }
-    }
-}
-
-function convertAudioToM4a(filePath: string) {
-    const file = `${UPLOAD_FOLDER}/${filePath}`
-    const fileName = filePath.split('.')[0]
-    const m4aFile = `${UPLOAD_FOLDER}/${fileName}.m4a`
-    const command = `ffmpeg -i ${file} -vn -ar 44100 -ac 1 ${m4aFile} -y`
-    try {
-        execSync(command)
-        console.log('AUDIO CONVERTIDO COM SUCESSO')
-        return m4aFile
-    } catch (error) {
-        console.log('ERRO AO CONVERTER AUDIO: ', error)
-        return file
     }
 }
 
