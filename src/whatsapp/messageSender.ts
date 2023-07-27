@@ -59,7 +59,7 @@ function messageOptions(message: MessageData) {
         case 'IMAGE':
             return {
                 // image: {url: `${UPLOAD_FOLDER}/${message.mediaFileName}`},
-                image: {url: `https://d22uovf8poqnbu.cloudfront.net/uploads/${message.mediaFileName}`},
+                image: {url: `${UPLOAD_FOLDER}/${message.mediaFileName}`},
                 caption: message.mediaCaption,
                 mimetype: imageMimeType(message.mediaFileName!).mimeType,
                 jpegThumbnail: undefined,
