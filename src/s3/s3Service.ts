@@ -13,6 +13,17 @@ const s3 = new S3Client({
     region: 'us-east-1',
 })
 
+export function putObjectInS3(buffer: Buffer, mediaUrl: string) {
+    const params = {
+        Bucket: 'wip-medias',
+        Key: `uploads/medias/${mediaUrl}`,
+        Body: buffer
+    }
+    console.log(`🚚 FAZENDO UPLOAD DO ARQUIVO ${mediaUrl} NO S3...`)
+    s3.send(new PutObjectCommand(params))
+        .catch(err => console.log('ERRO 🧨 AO FAZER UPLOAD DO ARQUIVO', err.message))
+}
+
 export function moveObjectThroughS3(oldPath: string, newPath: string) {
     const params = {
         Bucket: 'wip-medias',
