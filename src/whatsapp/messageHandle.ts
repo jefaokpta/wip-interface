@@ -5,7 +5,13 @@ import IWebMessageInfo = proto.IWebMessageInfo;
 import {mediaDateFormater} from "../util/dateHandler";
 import {WIP_API_URL} from "../util/systemConstants";
 import {putObjectInS3} from "../s3/s3Service";
+import IImageMessage = proto.Message.IImageMessage;
+import IVideoMessage = proto.Message.IVideoMessage;
+import IAudioMessage = proto.Message.IAudioMessage;
+import IDocumentMessage = proto.Message.IDocumentMessage;
+import IMessage = proto.IMessage;
 
+type DownloadTypes = IImageMessage | IVideoMessage | IAudioMessage | IDocumentMessage
 
 export function messageAnalisator(whatsappMessage: IWebMessageInfo) {
     const messageData = new MessageData(whatsappMessage)
@@ -16,15 +22,17 @@ export function messageAnalisator(whatsappMessage: IWebMessageInfo) {
         return;
     }
     if(whatsappMessage.message?.documentMessage) {
-        documentMessage(messageData, whatsappMessage, whatsappMessage.key.id!)
+        documentMessage(messageData, whatsappMessage.message, whatsappMessage.key.id!)
         sendMediaMessageToApi(messageData)
         return;
     }
-    // if (whatsappMessage.message?.documentWithCaptionMessage) {
-    //     documentMessage(messageData, whatsappMessage.message.documentWithCaptionMessage.message!, whatsappMessage.key.id!)
-    //         .then(() => sendMediaMessageToApi(messageData)) //todo: verificar como recebe documento com caption
-    //     return;
-    // }
+    if (whatsappMessage.message?.documentWithCaptionMessage) {
+        console.log(whatsappMessage.message)
+        documentMessage(messageData, whatsappMessage.message.documentWithCaptionMessage.message!, whatsappMessage.key.id!)
+        console.log(messageData)
+        sendMediaMessageToApi(messageData)
+        return;
+    }
     if(whatsappMessage.message?.videoMessage) {
         videoMessage(messageData, whatsappMessage)
         sendMediaMessageToApi(messageData)
@@ -84,7 +92,7 @@ function audioMessage(messageData: MessageData, message: IWebMessageInfo){
     messageData.isVoiceMessage = message.message?.audioMessage?.ptt
     const mimeTypeMedia = defineMimeTypeAudioMedia(message);
     messageData.mediaUrl  = `audio-${mediaDateFormater()}-${message.key.id}.${mimeTypeMedia}`
-    downloadAndSaveMedia(message, messageData, 'audio');
+    downloadAndSaveMedia(message.message!.audioMessage!, messageData, 'audio');
 }
 
 function defineMimeTypeAudioMedia(message: IWebMessageInfo){
@@ -97,17 +105,17 @@ function defineMimeTypeAudioMedia(message: IWebMessageInfo){
     }
 }
 
-function documentMessage(messageData: MessageData, message: IWebMessageInfo, messageId: string) {
+function documentMessage(messageData: MessageData, message: IMessage, messageId: string) {
     messageData.mediaMessage = true
     messageData.mediaType = 'DOCUMENT'
-    const fileName = message.message!.documentMessage!.fileName
+    const fileName = message.documentMessage!.fileName
     const fileExtension = fileName!!.split('.').pop()
     messageData.mediaUrl = `document-${mediaDateFormater()}-${messageId}.${fileExtension}`
-    messageData.mediaFileLength = Number(message.message!.documentMessage?.fileLength)
-    messageData.pdfPageCount = message.message!.documentMessage?.pageCount
+    messageData.mediaFileLength = Number(message.documentMessage?.fileLength)
+    messageData.pdfPageCount = message.documentMessage?.pageCount
     messageData.mediaFileName = fileName
-    messageData.mediaCaption = message.message!.documentMessage?.caption
-    downloadAndSaveMedia(message, messageData, 'document');
+    messageData.mediaCaption = message.documentMessage?.caption
+    downloadAndSaveMedia(message.documentMessage!, messageData, 'document');
 }
 
 function videoMessage(messageData: MessageData, message: IWebMessageInfo){
@@ -117,7 +125,7 @@ function videoMessage(messageData: MessageData, message: IWebMessageInfo){
     if (message.message?.videoMessage?.caption) {
         messageData.mediaCaption = message.message.videoMessage.caption
     }
-    downloadAndSaveMedia(message, messageData, 'video');
+    downloadAndSaveMedia(message.message?.videoMessage!, messageData, 'video');
 }
 
 function imageMessage(messageData: MessageData, message: IWebMessageInfo){
@@ -128,11 +136,11 @@ function imageMessage(messageData: MessageData, message: IWebMessageInfo){
     if(message.message?.imageMessage?.caption){
         messageData.mediaCaption = message.message.imageMessage.caption
     }
-    downloadAndSaveMedia(message, messageData, 'image');
+    downloadAndSaveMedia(message.message!.imageMessage!, messageData, 'image');
 }
 
-function downloadAndSaveMedia(message: proto.IWebMessageInfo, messageData: MessageData, mediaType: MediaType) {
-    downloadContentFromMessage(message.message!.imageMessage!, mediaType)
+function downloadAndSaveMedia(message: DownloadTypes, messageData: MessageData, mediaType: MediaType) {
+    downloadContentFromMessage(message, mediaType)
         .then(async stream => {
             let buffer = Buffer.from([])
             for await (const chunk of stream) {
