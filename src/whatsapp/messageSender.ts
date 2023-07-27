@@ -2,6 +2,7 @@ import {MessageData} from "../model/messageData";
 import {Whatsapp} from "../model/whatsapp";
 import {mediaDateFormater} from "../util/dateHandler";
 import {MEDIA_FOLDER, UPLOAD_FOLDER} from "../util/systemConstants";
+import {downloadFileFromS3} from "../s3/s3Service";
 
 const execSync = require('child_process').execSync;
 const fs = require('fs')
@@ -41,16 +42,16 @@ export async function sendMediaMessage(message: MessageData) {
     message.messageId = messageSended.key.id
     message.timestampInSeconds = Number(messageSended.messageTimestamp)
     message.messageStatus = messageSended.status || 2
-    message.mediaUrl = `${mediaDateFormater()}-${message.controlNumber}-${message.mediaType?.toLowerCase()}-${messageSended.key.id}.${message.mediaFileName?.split('.').pop()}`
-    fs.rename(`${UPLOAD_FOLDER}/${message.mediaFileName}`, `${MEDIA_FOLDER}/${message.mediaUrl}`, (err: any) => {
-        if (err) console.log('ERRO 🧨 AO MOVER MEDIA ENVIADA ', err)
-    })
-    if(message.isVoiceMessage) {
-        const m4aFile = `${UPLOAD_FOLDER}/${message.mediaFileName!.split('.')[0]}.m4a`
-        fs.rm(m4aFile, (err: any) => {
-            if (err) console.log('ERRO 🧨 AO REMOVER AUDIO CONVERTIDO M4A ', err)
-        })
-    }
+    message.mediaUrl = `${mediaDateFormater()}-${message.controlNumber}-${message.mediaType?.toLowerCase()}-${messageSended.key.id}.${message.mediaFileName!.split('.').pop()}`
+    // fs.rename(`${UPLOAD_FOLDER}/${message.mediaFileName}`, `${MEDIA_FOLDER}/${message.mediaUrl}`, (err: any) => {
+    //     if (err) console.log('ERRO 🧨 AO MOVER MEDIA ENVIADA ', err)
+    // })
+    // if(message.isVoiceMessage) {
+    //     const m4aFile = `${UPLOAD_FOLDER}/${message.mediaFileName!.split('.')[0]}.m4a`
+    //     fs.rm(m4aFile, (err: any) => {
+    //         if (err) console.log('ERRO 🧨 AO REMOVER AUDIO CONVERTIDO M4A ', err)
+    //     })
+    // }
     return message
 }
 
@@ -58,7 +59,8 @@ function messageOptions(message: MessageData) {
     switch (message.mediaType) {
         case 'IMAGE':
             return {
-                image: {url: `${UPLOAD_FOLDER}/${message.mediaFileName}`},
+                // image: {url: `${UPLOAD_FOLDER}/${message.mediaFileName}`},
+                image: {url: downloadFileFromS3(message.mediaFileName!)},
                 caption: message.mediaCaption,
                 mimetype: imageMimeType(message.mediaFileName!).mimeType,
                 jpegThumbnail: undefined,
@@ -79,9 +81,9 @@ function messageOptions(message: MessageData) {
             }
         case 'AUDIO':
             let audioFile = `${UPLOAD_FOLDER}/${message.mediaFileName}`
-            if (message.isVoiceMessage) {
-                audioFile = convertAudioToM4a(message.mediaFileName!)
-            }
+            // if (message.isVoiceMessage) { //todo: parei de converter
+            //     audioFile = convertAudioToM4a(message.mediaFileName!)
+            // }
             return {
                 audio: {url: audioFile},
                 mimetype: 'audio/mp4',

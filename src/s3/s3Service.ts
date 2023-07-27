@@ -6,6 +6,24 @@ const s3 = new S3Client({
     region: 'us-east-1',
 })
 
+export async function downloadFileFromS3(fileName: string) {
+    const params = {
+        Bucket: 'wip-medias',
+        Key: `uploads/${fileName}`
+    }
+
+    const commandOutputPromise = await s3.send(new GetObjectCommand(params));
+
+    return commandOutputPromise.Body?.transformToByteArray()
+    // .then(async data => {
+    //
+    //     fs.writeFileSync(fileName, await data.Body!!.transformToString('utf-8'))
+    // })
+    // .catch(err => {
+    //     console.log(err)
+    // })
+}
+
 export function uploadFolderToS3(folderPath: string) {
     console.log('🚚 ATUALIZANDO AUTHS NO S3...')
     const folderContent = fs.readdirSync(folderPath, { withFileTypes: true });
