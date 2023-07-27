@@ -6,22 +6,17 @@ const s3 = new S3Client({
     region: 'us-east-1',
 })
 
-export async function downloadFileFromS3(fileName: string) {
+export function moveObjectThroughS3(oldPath: string, newPath: string) {
     const params = {
         Bucket: 'wip-medias',
-        Key: `uploads/${fileName}`
+        CopySource: `wip-medias/${oldPath}`,
+        Key: newPath
     }
 
-    const commandOutputPromise = await s3.send(new GetObjectCommand(params));
-
-    return commandOutputPromise.Body?.transformToByteArray()
-    // .then(async data => {
-    //
-    //     fs.writeFileSync(fileName, await data.Body!!.transformToString('utf-8'))
-    // })
-    // .catch(err => {
-    //     console.log(err)
-    // })
+    s3.send(new PutObjectCommand(params))
+        .catch(err => {
+            console.log('ERRO 🧨 AO MOVER ARQUIVO', err.message)
+        })
 }
 
 export function uploadFolderToS3(folderPath: string) {
