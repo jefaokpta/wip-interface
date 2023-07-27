@@ -1,6 +1,13 @@
 import path from "path";
 import fs from "fs";
-import {GetObjectCommand, ListObjectsCommand, PutObjectCommand, S3Client} from "@aws-sdk/client-s3";
+import {
+    CopyObjectCommand,
+    DeleteObjectCommand,
+    GetObjectCommand,
+    ListObjectsCommand,
+    PutObjectCommand,
+    S3Client
+} from "@aws-sdk/client-s3";
 
 const s3 = new S3Client({
     region: 'us-east-1',
@@ -9,14 +16,20 @@ const s3 = new S3Client({
 export function moveObjectThroughS3(oldPath: string, newPath: string) {
     const params = {
         Bucket: 'wip-medias',
-        CopySource: `wip-medias/${oldPath}`,
-        Key: newPath
+        CopySource: `/wip-medias/uploads/${oldPath}`,
+        Key: `uploads/medias/${newPath}`
     }
-
-    s3.send(new PutObjectCommand(params))
-        .catch(err => {
-            console.log('ERRO 🧨 AO MOVER ARQUIVO', err.message)
+    console.log(`🚚 MOVENDO ARQUIVO ${oldPath} PARA ${newPath} NO S3...`)
+    s3.send(new CopyObjectCommand(params))
+        .then(() => {
+            const params = {
+                Bucket: 'wip-medias',
+                Key: `uploads/${oldPath}`
+            }
+            s3.send(new DeleteObjectCommand(params))
+                .catch(err => console.log(`ERRO 🧨 AO DELETAR ARQUIVO ${oldPath}`, err.message))
         })
+        .catch(err => console.log(`ERRO 🧨 AO MOVER ARQUIVO ${oldPath}`, err.message))
 }
 
 export function uploadFolderToS3(folderPath: string) {

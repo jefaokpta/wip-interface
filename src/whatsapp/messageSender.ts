@@ -1,10 +1,8 @@
 import {MessageData} from "../model/messageData";
 import {Whatsapp} from "../model/whatsapp";
 import {mediaDateFormater} from "../util/dateHandler";
-import {MEDIA_FOLDER, UPLOAD_FOLDER} from "../util/systemConstants";
-
-const execSync = require('child_process').execSync;
-const fs = require('fs')
+import {UPLOAD_FOLDER_URL} from "../util/systemConstants";
+import {moveObjectThroughS3} from "../s3/s3Service";
 
 
 export async function sendTxt(message: MessageData) {
@@ -42,9 +40,7 @@ export async function sendMediaMessage(message: MessageData) {
     message.timestampInSeconds = Number(messageSended.messageTimestamp)
     message.messageStatus = messageSended.status || 2
     message.mediaUrl = `${mediaDateFormater()}-${message.controlNumber}-${message.mediaType?.toLowerCase()}-${messageSended.key.id}.${message.mediaFileName!.split('.').pop()}`
-    // fs.rename(`${UPLOAD_FOLDER}/${message.mediaFileName}`, `${MEDIA_FOLDER}/${message.mediaUrl}`, (err: any) => {
-    //     if (err) console.log('ERRO 🧨 AO MOVER MEDIA ENVIADA ', err)
-    // })
+    moveObjectThroughS3(message.mediaFileName!, message.mediaUrl)
     return message
 }
 
@@ -52,35 +48,35 @@ function messageOptions(message: MessageData) {
     switch (message.mediaType) {
         case 'IMAGE':
             return {
-                image: {url: `${UPLOAD_FOLDER}/${message.mediaFileName}`},
+                image: {url: `${UPLOAD_FOLDER_URL}/${message.mediaFileName}`},
                 caption: message.mediaCaption,
                 mimetype: imageMimeType(message.mediaFileName!).mimeType,
                 jpegThumbnail: undefined,
             }
         case 'DOCUMENT':
             return {
-                document: {url: `${UPLOAD_FOLDER}/${message.mediaFileName}`},
+                document: {url: `${UPLOAD_FOLDER_URL}/${message.mediaFileName}`},
                 caption: message.mediaCaption,
                 mimetype: 'application/pdf',
                 fileName: message.mediaFileName,
             }
         case 'VIDEO':
             return {
-                video: {url: `${UPLOAD_FOLDER}/${message.mediaFileName}`},
+                video: {url: `${UPLOAD_FOLDER_URL}/${message.mediaFileName}`},
                 caption: message.mediaCaption,
                 gifPlayback: undefined,
                 jpegThumbnail: undefined,
             }
         case 'AUDIO':
             return {
-                audio: {url: `${UPLOAD_FOLDER}/${message.mediaFileName}`},
+                audio: {url: `${UPLOAD_FOLDER_URL}/${message.mediaFileName}`},
                 mimetype: 'audio/mp4',
                 ptt: message.isVoiceMessage,
                 seconds: undefined
             }
         default:
             return {
-                document: {url: `${UPLOAD_FOLDER}/${message.mediaFileName}`},
+                document: {url: `${UPLOAD_FOLDER_URL}/${message.mediaFileName}`},
                 mimetype: 'application/pdf',
                 fileName: message.mediaFileName,
             }
