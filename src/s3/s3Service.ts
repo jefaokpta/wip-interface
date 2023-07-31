@@ -10,13 +10,14 @@ import {
 } from "@aws-sdk/client-s3";
 import {CONTROL_NUMBER} from "../util/systemConstants";
 
+const BUCKET_NAME = 'wip-medias'
 const s3 = new S3Client({
     region: 'us-east-1',
 })
 
 export function putObjectInS3(buffer: Buffer, mediaUrl: string) {
     const params = {
-        Bucket: 'wip-medias',
+        Bucket: BUCKET_NAME,
         Key: `uploads/medias/${CONTROL_NUMBER}/${mediaUrl}`,
         Body: buffer
     }
@@ -27,15 +28,15 @@ export function putObjectInS3(buffer: Buffer, mediaUrl: string) {
 
 export function moveObjectThroughS3(oldPath: string, newPath: string) {
     const params = {
-        Bucket: 'wip-medias',
-        CopySource: `/wip-medias/uploads/${oldPath}`,
+        Bucket: BUCKET_NAME,
+        CopySource: `/BUCKET_NAME/uploads/${oldPath}`,
         Key: `uploads/medias/${CONTROL_NUMBER}/${newPath}`
     }
     console.log(`🚚 MOVENDO ARQUIVO ${oldPath} PARA ${newPath} NO S3...`)
     s3.send(new CopyObjectCommand(params))
         .then(() => {
             const params = {
-                Bucket: 'wip-medias',
+                Bucket: BUCKET_NAME,
                 Key: `uploads/${oldPath}`
             }
             s3.send(new DeleteObjectCommand(params))
@@ -51,7 +52,7 @@ export function uploadFolderToS3(folderPath: string) {
     for (const item of folderContent) {
         const itemPath = path.join(folderPath, item.name);
         const params = {
-            Bucket: 'wip-medias',
+            Bucket: BUCKET_NAME,
             Key: `auths/${itemPath}`,
             Body: fs.readFileSync(itemPath)
         }
@@ -64,7 +65,7 @@ export function uploadFolderToS3(folderPath: string) {
 
 export async function restoreFolderFromS3(folderName: string) {
     const params = {
-        Bucket: 'wip-medias',
+        Bucket: BUCKET_NAME,
         Prefix: `auths/${folderName}`
     }
 
@@ -78,7 +79,7 @@ export async function restoreFolderFromS3(folderName: string) {
             for (const item of data.Contents) {
                 console.log(item.Key)
                 const params = {
-                    Bucket: 'wip-medias',
+                    Bucket: BUCKET_NAME,
                     Key: item.Key
                 }
 
