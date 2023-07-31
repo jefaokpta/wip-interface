@@ -8,6 +8,7 @@ import {
     PutObjectCommand,
     S3Client
 } from "@aws-sdk/client-s3";
+import {CONTROL_NUMBER} from "../util/systemConstants";
 
 const s3 = new S3Client({
     region: 'us-east-1',
@@ -16,7 +17,7 @@ const s3 = new S3Client({
 export function putObjectInS3(buffer: Buffer, mediaUrl: string) {
     const params = {
         Bucket: 'wip-medias',
-        Key: `uploads/medias/${mediaUrl}`,
+        Key: `uploads/medias/${CONTROL_NUMBER}/${mediaUrl}`,
         Body: buffer
     }
     console.log(`🚚 FAZENDO UPLOAD DO ARQUIVO ${mediaUrl} NO S3...`)
@@ -28,7 +29,7 @@ export function moveObjectThroughS3(oldPath: string, newPath: string) {
     const params = {
         Bucket: 'wip-medias',
         CopySource: `/wip-medias/uploads/${oldPath}`,
-        Key: `uploads/medias/${newPath}`
+        Key: `uploads/medias/${CONTROL_NUMBER}/${newPath}`
     }
     console.log(`🚚 MOVENDO ARQUIVO ${oldPath} PARA ${newPath} NO S3...`)
     s3.send(new CopyObjectCommand(params))
