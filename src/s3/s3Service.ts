@@ -29,7 +29,7 @@ export function putObjectInS3(buffer: Buffer, mediaUrl: string) {
 export function moveObjectThroughS3(oldPath: string, newPath: string) {
     const params = {
         Bucket: BUCKET_NAME,
-        CopySource: `/BUCKET_NAME/uploads/${oldPath}`,
+        CopySource: `/${BUCKET_NAME}/uploads/${oldPath}`,
         Key: `uploads/medias/${CONTROL_NUMBER}/${newPath}`
     }
     console.log(`🚚 MOVENDO ARQUIVO ${oldPath} PARA ${newPath} NO S3...`)
