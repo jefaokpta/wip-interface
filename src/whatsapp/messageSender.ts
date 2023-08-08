@@ -21,11 +21,11 @@ export function sendChatbot(message: MessageData, invalidOption: boolean) {
 }
 
 export function checkIfIsOnWhatsapp(telNumber: string): Promise<boolean[]> {
-    return Whatsapp.sock.onWhatsApp(telNumber).map((isOnWhatsapp: boolean) => isOnWhatsapp)
+    return Whatsapp.sock.onWhatsApp(telNumber.concat('@s.whatsapp.net')).map((isOnWhatsapp: boolean) => isOnWhatsapp)
 }
 
 export async function blockUnblockContact(blockData: { remoteJid: string, action: 'block' | 'unblock' }) {
-    await Whatsapp.sock.updateBlockStatus(blockData.remoteJid, blockData.action)
+    await Whatsapp.sock.updateBlockStatus(blockData.remoteJid.concat('@s.whatsapp.net'), blockData.action)
 }
 
 export function sendSurveyMessage(message: MessageData) {
