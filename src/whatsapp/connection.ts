@@ -9,14 +9,14 @@ import {sendQrCode} from "../util/qrCodeHandle";
 import {Whatsapp} from "../model/whatsapp";
 import axios from "axios";
 import {messageAnalisator} from "./messageHandle";
-import {CONTROL_NUMBER, WIP_API_URL} from "../util/systemConstants";
+import {CONTROL_NUMBER, WA_VERSION, WIP_API_URL} from "../util/systemConstants";
 
 
 export const connectWhatsApp = async (waVersion: WAVersion) => {
 
     console.log(`WA VERSION PEGO DA LIB: ${waVersion.join('.')}`)
-    console.log('WA VERSION PEGO DA VAR ENV: ', process.env.WA_VERSION)
-    const waVersionChoosed = process.env.WA_VERSION?.split('.').map(v => Number(v)) as WAVersion ?? waVersion
+    console.log('WA VERSION ALEIJADO NO CODIGO: ', WA_VERSION)
+    const waVersionChoosed = WA_VERSION.split('.').map(v => Number(v)) as WAVersion ?? waVersion
     console.log(`WA VERSION ESCOLHIDA: ${waVersionChoosed.join('.')}`)
     const { state, saveCreds } = await useMultiFileAuthState(await authFolderRestore())
     const sock = makeWASocket({
