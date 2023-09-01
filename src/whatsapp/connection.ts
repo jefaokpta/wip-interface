@@ -24,6 +24,9 @@ export const connectWhatsApp = async (waVersion: WAVersion) => {
         auth: state,
         printQRInTerminal: true,
         syncFullHistory: false,
+        connectTimeoutMs: 300000,
+        defaultQueryTimeoutMs: undefined,
+        keepAliveIntervalMs: 60000,
     })
 
     /** connection state has been updated -- WS closed, opened, connecting etc. */
