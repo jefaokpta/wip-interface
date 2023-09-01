@@ -6,6 +6,7 @@ import {moveObjectThroughS3} from "../s3/s3Service";
 
 
 export async function sendTxt(message: MessageData) {
+    console.log('➡️ ENVIANDO MENSAGEM DE TEXTO', message)
     const messageSended = await Whatsapp.sock.sendMessage(message.whatsapp!.concat('@s.whatsapp.net'), {text: message.text!})
     message.messageId = messageSended.key.id
     message.timestampInSeconds = Number(messageSended.messageTimestamp)
@@ -14,6 +15,7 @@ export async function sendTxt(message: MessageData) {
 }
 
 export function sendChatbot(message: MessageData, invalidOption: boolean) {
+    console.log('➡️ ENVIANDO MENSAGEM DE CHATBOT', message)
     const chatbot = message.chatbot!!
     const options = chatbot.options.map((option) => `${option.option} - ${option.department}`).join('\n')
     const text = invalidOption ? `${chatbot.invalidOption}\n\n${options}` : `${chatbot.initialMessage}\n\n${options}`
@@ -29,12 +31,14 @@ export async function blockUnblockContact(blockData: { remoteJid: string, action
 }
 
 export function sendSurveyMessage(message: MessageData) {
+    console.log('➡️ ENVIANDO MENSAGEM DE SURVEY', message)
     const fakeButtonMessage = `${message.text} \n 3 => 😃 \n 2 => 😐 \n 1 => 😩`
     Whatsapp.sock.sendMessage (message.whatsapp!.concat('@s.whatsapp.net'), {text: fakeButtonMessage})
         .catch((error: any) => console.log('ERRO AO ENVIAR SURVEY ',error))
 }
 
 export async function sendMediaMessage(message: MessageData) {
+    console.log('➡️ ENVIANDO MENSAGEM DE MEDIA', message)
     const messageSended = await Whatsapp.sock.sendMessage(message.whatsapp!.concat('@s.whatsapp.net'), messageOptions(message))
     message.messageId = messageSended.key.id
     message.timestampInSeconds = Number(messageSended.messageTimestamp)

@@ -77,11 +77,13 @@ export function messageAnalisator(whatsappMessage: IWebMessageInfo) {
 }
 
 function sendTextMessageToApi(messageData: MessageData) {
+    console.log('⬅️ RECEBENDO MENSAGEM DE TEXTO', messageData)
     axios.post(`${WIP_API_URL}/wip/whatsapp/text-messages`, messageData)
         .catch(err => console.log('ERRO 🧨 AO ENVIAR MENSAGEM DE TEXTO', err.message))
 }
 
 function sendMediaMessageToApi(messageData: MessageData) {
+    console.log('⬅️ RECEBENDO MENSAGEM DE MÍDIA', messageData)
     axios.post(`${WIP_API_URL}/wip/whatsapp/media-messages`, messageData)
         .catch(err => console.log('ERRO 🧨 AO ENVIAR MENSAGEM DE MÍDIA', err.message, messageData))
 }
