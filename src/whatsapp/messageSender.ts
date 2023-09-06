@@ -17,7 +17,10 @@ export async function sendTxt(message: MessageData) {
 export function sendChatbot(message: MessageData, invalidOption: boolean) {
     console.log('➡️ ENVIANDO MENSAGEM DE CHATBOT', message)
     const chatbot = message.chatbot!!
-    const options = chatbot.options.map((option) => `${option.option} - ${option.department}`).join('\n')
+    const options = chatbot.options
+        .sort((a, b) => a.option - b.option)
+        .map((option) => `${option.option} - ${option.department}`)
+        .join('\n')
     const text = invalidOption ? `${chatbot.invalidOption}\n\n${options}` : `${chatbot.initialMessage}\n\n${options}`
     Whatsapp.sock.sendMessage(message.whatsapp!.concat('@s.whatsapp.net'), {text: text})
 }
