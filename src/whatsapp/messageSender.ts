@@ -47,8 +47,8 @@ export async function sendMediaMessage(message: MessageData) {
     message.timestampInSeconds = Number(messageSended.messageTimestamp)
     message.messageStatus = messageSended.status || 2
     message.mediaUrl = `${message.mediaType?.toLowerCase()}-${mediaDateFormater()}-${messageSended.key.id}.${message.mediaFileName!.split('.').pop()}`
-    message.mediaFileName = message.documentFileName
     moveObjectThroughS3(message.mediaFileName!, message.mediaUrl)
+    message.mediaFileName = message.documentFileName
     return message
 }
 
