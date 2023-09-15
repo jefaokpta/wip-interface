@@ -29,7 +29,7 @@ chatbotController.post('/', (req, res) => {
 
 isOnWhatsapp.post('/', (req, res) => {
     checkIfIsOnWhatsapp(req.body.telNumber)
-        .then((isOn) => res.send(isOn.length > 0))
+        .then((isOn) => res.send(isOn))
         .catch((error) => res.send(error))
 })
 

@@ -25,9 +25,8 @@ export function sendChatbot(message: MessageData, invalidOption: boolean) {
     Whatsapp.sock.sendMessage(message.whatsapp!.concat('@s.whatsapp.net'), {text: text})
 }
 
-export function checkIfIsOnWhatsapp(telNumber: string): Promise<boolean[]> {
-    return Whatsapp.sock.onWhatsApp(telNumber.concat('@s.whatsapp.net'))
-        // .map((isOnWhatsapp: boolean) => isOnWhatsapp)
+export function checkIfIsOnWhatsapp(telNumber: string): Promise<{exists: boolean, jid: string}[]> {
+    return Whatsapp.sock.onWhatsApp(telNumber)
 }
 
 export async function blockUnblockContact(blockData: { remoteJid: string, action: 'block' | 'unblock' }) {
