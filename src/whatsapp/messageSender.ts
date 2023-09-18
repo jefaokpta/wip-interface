@@ -52,6 +52,11 @@ export async function sendMediaMessage(message: MessageData) {
     return message
 }
 
+export function sendMediaMessageTransmissionList(message: MessageData) {
+    console.log('➡️ ENVIANDO MENSAGEM DE MEDIA DE LISTA DE TRANSMISSAO', message)
+    Whatsapp.sock.sendMessage(message.whatsapp!.concat('@s.whatsapp.net'), messageOptions(message))
+}
+
 function messageOptions(message: MessageData) {
     switch (message.mediaType) {
         case 'IMAGE':

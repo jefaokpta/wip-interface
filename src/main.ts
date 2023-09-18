@@ -6,7 +6,7 @@ import {
     surveyMessageController,
     chatbotController,
     isOnWhatsapp,
-    messageController
+    messageController, mediaMessageTransmission
 } from "./controller/messageController";
 import {profilePicture} from "./controller/profilePictureController";
 
@@ -31,6 +31,7 @@ fetchLatestBaileysVersion()
 router.use('/whatsapp/messages/text', messageController)
 router.use('/whatsapp/messages/chatbot', chatbotController)
 router.use('/whatsapp/messages/survey', surveyMessageController)
+router.use('/whatsapp/messages/media-message-transmission', mediaMessageTransmission)
 router.use('/whatsapp/profile/picture', profilePicture)
 router.use('/whatsapp/contacts/block', blockContact)
 router.use('/whatsapp/contacts/is-on-whats', isOnWhatsapp)

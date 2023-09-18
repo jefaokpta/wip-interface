@@ -4,7 +4,7 @@ import {
     checkIfIsOnWhatsapp,
     sendSurveyMessage, sendChatbot,
     sendMediaMessage,
-    sendTxt
+    sendTxt, sendMediaMessageTransmissionList
 } from "../whatsapp/messageSender";
 
 
@@ -13,6 +13,7 @@ export const chatbotController = express()
 export const surveyMessageController = express()
 export const blockContact = express()
 export const isOnWhatsapp = express()
+export const mediaMessageTransmission = express()
 
 messageController.post('/', async (req, res) => {
     if(req.body.mediaMessage) {
@@ -40,5 +41,10 @@ blockContact.post('/', (req, res) => {
 
 surveyMessageController.post('/', (req, res) => {
     sendSurveyMessage(req.body)
+    res.sendStatus(200)
+})
+
+mediaMessageTransmission.post('/', (req, res) => {
+    sendMediaMessageTransmissionList(req.body)
     res.sendStatus(200)
 })
