@@ -7,17 +7,11 @@ import {moveObjectThroughS3} from "../s3/s3Service";
 
 export async function sendTxt(message: MessageData) {
     console.log('➡️ ENVIANDO MENSAGEM DE TEXTO', message)
-    const check = await checkIfIsOnWhatsapp(message.whatsapp!)
-    if(check[0].exists) {
-        const messageSended = await Whatsapp.sock.sendMessage(check[0].jid, {text: message.text!})
-        message.messageId = messageSended.key.id
-        message.timestampInSeconds = Number(messageSended.messageTimestamp)
-        message.messageStatus = messageSended.status || 2
-        return message
-    } else {
-        message.messageStatus = 3 //todo: criar enum para status de mensagem falhada
-        return message
-    }
+    const messageSended = await Whatsapp.sock.sendMessage(message.whatsapp!.concat('@s.whatsapp.net'), {text: message.text!})
+    message.messageId = messageSended.key.id
+    message.timestampInSeconds = Number(messageSended.messageTimestamp)
+    message.messageStatus = messageSended.status || 2
+    return message
 }
 
 export function sendChatbot(message: MessageData, invalidOption: boolean) {
