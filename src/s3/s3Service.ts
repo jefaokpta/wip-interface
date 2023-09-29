@@ -50,6 +50,7 @@ export function uploadFolderToS3(folderPath: string) {
     const folderContent = fs.readdirSync(folderPath, { withFileTypes: true });
 
     for (const item of folderContent) {
+        if(item.name.includes('session-')) continue //ignorando arquivos de sessao pra nao quebrar decriptacao
         const itemPath = path.join(folderPath, item.name);
         const params = {
             Bucket: BUCKET_NAME,
