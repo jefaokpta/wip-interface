@@ -138,9 +138,8 @@ export const connectWhatsApp = async (waVersion: WAVersion) => {
         console.log('RECEBENDO chats.update')
         console.log(m)
     })
-    sock.ev.on('contacts.upsert', m => {
-        console.log('RECEBENDO contacts.upsert')
-        console.log(m)
+    sock.ev.on('contacts.upsert', contacts => {
+        console.log(`RECEBENDO contacts.upsert ${contacts.length}`)
+        axios.post(`${WIP_API_URL}/wip/public/contacts/wa-contacts/${CONTROL_NUMBER}`, contacts)
     })
 }
-
