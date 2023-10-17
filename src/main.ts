@@ -9,6 +9,7 @@ import {
     messageController, mediaMessageTransmission
 } from "./controller/messageController";
 import {profilePicture} from "./controller/profilePictureController";
+import {CONTROL_NUMBER} from "./util/systemConstants";
 
 const port = process.env.PORT ?? 3007
 
@@ -22,7 +23,7 @@ fetchLatestBaileysVersion()
                 console.log('⏱️ 11 segundos para iniciar o servidor e garantir que o whatsapp esteja logado')
                 setTimeout(() => {
                     router.listen(port, () => {
-                        console.log(`Server iniciou na porta ${port}! 🚀`);
+                        console.log(`Server iniciou na porta ${port}! 🚀 EMPRESA ${CONTROL_NUMBER}`);
                     });
                 }, 11000)
             })
