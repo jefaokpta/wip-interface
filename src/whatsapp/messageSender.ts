@@ -42,14 +42,20 @@ export function sendSurveyMessage(message: MessageData) {
 
 export async function sendMediaMessage(message: MessageData) {
     console.log('➡️ ENVIANDO MENSAGEM DE MEDIA', message)
-    const messageSended = await Whatsapp.sock.sendMessage(message.whatsapp!.concat('@s.whatsapp.net'), messageOptions(message))
-    message.messageId = messageSended.key.id
-    message.timestampInSeconds = Number(messageSended.messageTimestamp)
-    message.messageStatus = messageSended.status || 2
-    message.mediaUrl = `${message.mediaType?.toLowerCase()}-${mediaDateFormater()}-${messageSended.key.id}.${message.mediaFileName!.split('.').pop()}`
-    moveObjectThroughS3(message.mediaFileName!, message.mediaUrl)
-    message.mediaFileName = message.documentFileName
-    return message
+    try{
+        const messageSended = await Whatsapp.sock.sendMessage(message.whatsapp!.concat('@s.whatsapp.net'), messageOptions(message))
+        message.messageId = messageSended.key.id
+        message.timestampInSeconds = Number(messageSended.messageTimestamp)
+        message.messageStatus = messageSended.status || 2
+        message.mediaUrl = `${message.mediaType?.toLowerCase()}-${mediaDateFormater()}-${messageSended.key.id}.${message.mediaFileName!.split('.').pop()}`
+        moveObjectThroughS3(message.mediaFileName!, message.mediaUrl)
+        message.mediaFileName = message.documentFileName
+        return message
+    } catch (e) {
+        console.log('🧨 ERRO AO ENVIAR MEDIA', e)
+        //todo: precisa retornar a mensagem com erro pra api java
+        return null
+    }
 }
 
 export function sendMediaMessageTransmissionList(message: MessageData) {
