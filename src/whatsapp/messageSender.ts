@@ -53,8 +53,7 @@ export async function sendMediaMessage(message: MessageData) {
         return message
     } catch (e) {
         console.log('🧨 ERRO AO ENVIAR MEDIA', e)
-        //todo: precisa retornar a mensagem com erro pra api java
-        return null
+        return {error: e, isDiscardMessage: true}
     }
 }
 
