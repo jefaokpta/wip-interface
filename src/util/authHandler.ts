@@ -27,3 +27,13 @@ export function confirmAuthToApi(){
             console.log('ERRO 🧨 AO CONFIRMAR AUTH', err.message)
         })
 }
+
+export function alertRegisterFailedToApi(){
+    axios.post(`${WIP_API_URL}/wip/whatsapp/register/failed/${CONTROL_NUMBER}`)
+        .then(() => {
+            console.log('⚠️ API WIP INFORMADA DA FALHA NO REGISTRO')
+        })
+        .catch(err => {
+            console.log('ERRO 🧨 AO INFORMAR A FALHA NO REGISTRO', err.message)
+        })
+}

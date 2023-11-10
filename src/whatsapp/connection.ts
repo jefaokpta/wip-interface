@@ -4,7 +4,7 @@ import makeWASocket, {
     WAVersion
 } from "@whiskeysockets/baileys";
 import {Boom} from "@hapi/boom";
-import {authFolderDuplicate, authFolderRestore, confirmAuthToApi} from "../util/authHandler";
+import {alertRegisterFailedToApi, authFolderDuplicate, authFolderRestore, confirmAuthToApi} from "../util/authHandler";
 import {sendQrCode} from "../util/qrCodeHandle";
 import {Whatsapp} from "../model/whatsapp";
 import axios from "axios";
@@ -57,6 +57,7 @@ export const connectWhatsApp = async (waVersion: WAVersion) => {
                     console.log('!!! ATENCAO!!! AO LER QR CODE NAO PODE TER MENSAGENS PENDENTES')
                     console.log('ARQUIVO DE AUTENTICACAO DEVE SER DELETADO')
                     console.log('SISTEMA SERA DESLIGADO EM 5 SEGUNDOS')
+                    alertRegisterFailedToApi()
                     setTimeout(() => {
                         process.exit(1)
                     }, 5000)
