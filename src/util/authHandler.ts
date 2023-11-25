@@ -16,12 +16,13 @@ export async function authFolderRestore() {
 
 export function authFolderDuplicate() {
     uploadFolderToS3(authFolderPath)
+    confirmAuthToApi()
 }
 
-export function confirmAuthToApi(){
+function confirmAuthToApi(){
     axios.post(`${WIP_API_URL}/wip/whatsapp/register/confirmed/${CONTROL_NUMBER}`)
         .then(() => {
-            console.log('AUTH CONFIRMADA')
+            console.log('👍🏼 AUTH CONFIRMADA PARA API WIP')
         })
         .catch(err => {
             console.log('ERRO 🧨 AO CONFIRMAR AUTH', err.message)

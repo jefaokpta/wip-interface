@@ -4,7 +4,7 @@ import makeWASocket, {
     WAVersion
 } from "@whiskeysockets/baileys";
 import {Boom} from "@hapi/boom";
-import {alertRegisterFailedToApi, authFolderDuplicate, authFolderRestore, confirmAuthToApi} from "../util/authHandler";
+import {alertRegisterFailedToApi, authFolderDuplicate, authFolderRestore} from "../util/authHandler";
 import {sendQrCode} from "../util/qrCodeHandle";
 import {Whatsapp} from "../model/whatsapp";
 import axios from "axios";
@@ -41,7 +41,6 @@ export const connectWhatsApp = async (waVersion: WAVersion) => {
                 Whatsapp.sock = sock
                 console.log('SISTEMA LOGADO AO WHATSAPP COM SUCESSO 🚀 ')
                 authFolderDuplicate()
-                confirmAuthToApi()
                 break
             case 'close':
                 const shouldReconnect = (lastDisconnect?.error as Boom)?.output?.statusCode !== DisconnectReason.loggedOut
