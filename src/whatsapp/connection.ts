@@ -1,5 +1,5 @@
 import makeWASocket, {
-    DisconnectReason,
+    DisconnectReason, proto,
     useMultiFileAuthState,
     WAVersion
 } from "@whiskeysockets/baileys";
@@ -10,6 +10,8 @@ import {Whatsapp} from "../model/whatsapp";
 import axios from "axios";
 import {messageAnalisator} from "./messageHandle";
 import {CONTROL_NUMBER, WA_VERSION, WIP_API_URL} from "../util/systemConstants";
+import {MessageData} from "../model/messageData";
+import IWebMessageInfo = proto.IWebMessageInfo;
 
 
 export const connectWhatsApp = async (waVersion: WAVersion) => {
@@ -70,7 +72,10 @@ export const connectWhatsApp = async (waVersion: WAVersion) => {
 
     sock.ev.on('messages.upsert',  m => {
         const message  = m.messages[0]
-        if(message.key.fromMe) return;
+        if(message.key.fromMe){
+            setTimeout(possibleMsgFromMobileDevice, 30000, message)
+            return;
+        }
         console.log(message)
         if(message.key.remoteJid?.includes('@g.us')){
             console.log('MENSAGEM DE GRUPO, IGNORANDO E DESCARTANDO...')
@@ -136,10 +141,34 @@ export const connectWhatsApp = async (waVersion: WAVersion) => {
      */
     sock.ev.on('chats.update', m => {
         console.log('RECEBENDO chats.update')
-        console.log(m)
+        console.log(m[0])
     })
     sock.ev.on('contacts.upsert', contacts => {
         console.log(`RECEBENDO contacts.upsert ${contacts.length}`)
         axios.post(`${WIP_API_URL}/wip/public/contacts/wa-contacts/${CONTROL_NUMBER}`, contacts)
     })
+}
+
+function possibleMsgFromMobileDevice(whatsappMessage: IWebMessageInfo) {
+    const messageData = new MessageData(whatsappMessage)
+    console.log('⬅️ timestamp', messageData.timestampInSeconds)
+    messageData.timestampInSeconds = Date.now() / 1000
+    if (whatsappMessage.message?.conversation) {
+        console.log('INFO: 📩 ENVIANDO CONVERSATION PRA API', whatsappMessage.message.conversation)
+        messageData.text = whatsappMessage.message?.conversation
+        sendMobileTextMessageToApi(messageData);
+        return
+    }
+    if (whatsappMessage.message?.extendedTextMessage) {
+        console.log('INFO: 📩 ENVIANDO EXTENDED TEXT PRA API', whatsappMessage.message.extendedTextMessage)
+        messageData.text = whatsappMessage.message.extendedTextMessage.text
+        messageData.quoteId = whatsappMessage.message.extendedTextMessage.contextInfo?.stanzaId
+        messageData.quoteText = whatsappMessage.message.extendedTextMessage.contextInfo?.quotedMessage?.conversation
+        sendMobileTextMessageToApi(messageData);
+    }
+}
+function sendMobileTextMessageToApi(messageData: MessageData) {
+    console.log('⬅️ RECEBENDO MENSAGEM DE TEXTO', messageData)
+    axios.post(`${WIP_API_URL}/wip/whatsapp/text-messages/mobile`, messageData)
+        .catch(err => console.log('ERRO 🧨 AO ENVIAR MENSAGEM DE TEXTO', err.message))
 }
