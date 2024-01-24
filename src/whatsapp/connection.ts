@@ -151,8 +151,6 @@ export const connectWhatsApp = async (waVersion: WAVersion) => {
 
 function possibleMsgFromMobileDevice(whatsappMessage: IWebMessageInfo) {
     const messageData = new MessageData(whatsappMessage)
-    console.log('⬅️ timestamp', messageData.timestampInSeconds)
-    messageData.timestampInSeconds = Date.now() / 1000
     if (whatsappMessage.message?.conversation) {
         console.log('INFO: 📩 ENVIANDO CONVERSATION PRA API', whatsappMessage.message.conversation)
         messageData.text = whatsappMessage.message?.conversation
@@ -168,7 +166,7 @@ function possibleMsgFromMobileDevice(whatsappMessage: IWebMessageInfo) {
     }
 }
 function sendMobileTextMessageToApi(messageData: MessageData) {
-    console.log('⬅️ RECEBENDO MENSAGEM DE TEXTO', messageData)
+    console.log('⬅️ ENVIADO MENSAGEM DE TEXTO DO DEVICE', messageData)
     axios.post(`${WIP_API_URL}/wip/whatsapp/text-messages/mobile`, messageData)
         .catch(err => console.log('ERRO 🧨 AO ENVIAR MENSAGEM DE TEXTO', err.message))
 }
