@@ -151,6 +151,7 @@ export const connectWhatsApp = async (waVersion: WAVersion) => {
 
 function possibleMsgFromMobileDevice(whatsappMessage: IWebMessageInfo) {
     const messageData = new MessageData(whatsappMessage)
+    console.log(messageData.timestampInSeconds)
     messageData.timestampInSeconds = new Date(messageData.timestampInSeconds as number).getTime()
     if (whatsappMessage.message?.conversation) {
         console.log('INFO: 📩 ENVIANDO CONVERSATION PRA API', whatsappMessage.message.conversation)
