@@ -3,4 +3,4 @@ export const CONTROL_NUMBER = Number(process.env.CONTROL_NUMBER ?? 900023)
 export const UPLOAD_FOLDER_URL = 'https://d3mqe4ehhhyqta.cloudfront.net/uploads'
 export const BUCKET_S3 = 'wip-medias'
 
-export const WA_VERSION = '2.2404.1'
+export const WA_VERSION = '2.2412.54'
